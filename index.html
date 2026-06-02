@@ -3,147 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iOS Studio Pro - Real Fix</title>
+    <title>iOS Studio Ultimate Pro</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         html, body { overflow-y: auto !important; height: auto !important; min-height: 100vh; }
-        .glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-panel { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .ios-dock { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.2); }
     </style>
 </head>
 <body class="bg-[#030712] text-slate-100 font-sans antialiased text-[10px]">
 
     <nav class="border-b border-white/5 bg-slate-950/80 sticky top-0 z-50 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-3 py-1 flex justify-between items-center">
-            <div class="flex items-center gap-1">
+        <div class="max-w-7xl mx-auto px-3 py-1.5 flex justify-between items-center">
+            <div class="flex items-center gap-1.5">
                 <div class="w-4 h-4 bg-blue-600 rounded flex items-center justify-center animate-pulse">
                     <i data-lucide="sparkles" class="text-white w-2.5 h-2.5"></i>
                 </div>
                 <div>
-                    <span class="font-bold text-[10px] block text-white">iOS Studio v2</span>
-                    <span class="text-[6px] text-emerald-400 font-mono block tracking-widest">LIVE APPS & DIRECT DOWNLOAD</span>
+                    <span class="font-bold text-[10px] block text-white tracking-wide">iOS Studio Pro</span>
+                    <span class="text-[6px] text-emerald-400 font-mono block tracking-widest uppercase data-lang" data-key="subtitle">ŽIVÉ IKONY & JAZYKY</span>
                 </div>
             </div>
-            <div class="flex bg-slate-900 p-0.5 rounded border border-white/5">
-                <button onclick="switchTab('maker')" id="btn-maker" class="px-2 py-0.5 rounded bg-blue-600 font-bold text-[8px] text-white cursor-pointer">Editor</button>
-                <button onclick="switchTab('community')" id="btn-community" class="px-2 py-0.5 rounded font-bold text-[8px] text-slate-400 hover:text-white cursor-pointer">Moje Úložiště (<span id="global-counter">0</span>)</button>
+            
+            <div class="flex items-center gap-2">
+                <div class="flex bg-slate-900 p-0.5 rounded border border-white/5 text-[7px] font-bold">
+                    <button onclick="changeLanguage('cz')" id="lang-cz" class="px-1.5 py-0.5 rounded bg-slate-800 text-white cursor-pointer transition-all">CZ</button>
+                    <button onclick="changeLanguage('sk')" id="lang-sk" class="px-1.5 py-0.5 rounded text-slate-400 hover:text-white cursor-pointer transition-all">SK</button>
+                    <button onclick="changeLanguage('en')" id="lang-en" class="px-1.5 py-0.5 rounded text-slate-400 hover:text-white cursor-pointer transition-all">EN</button>
+                </div>
+
+                <div class="flex bg-slate-900 p-0.5 rounded border border-white/5">
+                    <button onclick="switchTab('maker')" id="btn-maker" class="px-2.5 py-0.5 rounded bg-blue-600 font-bold text-[8px] text-white cursor-pointer transition-all data-lang" data-key="tabEditor">Editor</button>
+                    <button onclick="switchTab('community')" id="btn-community" class="px-2.5 py-0.5 rounded font-bold text-[8px] text-slate-400 hover:text-white cursor-pointer transition-all"><span class="data-lang" data-key="tabStorage">Moje Úložiště</span> (<span id="global-counter">0</span>)</button>
+                </div>
             </div>
         </div>
     </nav>
 
     <main class="max-w-7xl mx-auto px-2 py-2">
         
-        <div id="tab-maker" class="grid grid-cols-1 lg:grid-cols-12 gap-2 items-start">
+        <div id="tab-maker" class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start">
             
-            <div class="lg:col-span-4 glass-panel rounded-lg p-2 space-y-2.5 shadow-xl">
+            <div class="lg:col-span-4 glass-panel rounded-xl p-3 space-y-3 shadow-2xl">
                 
-                <div class="bg-gradient-to-r from-blue-950/40 to-slate-900/60 p-1.5 rounded border border-blue-500/30">
-                    <label class="block text-[7px] font-bold uppercase tracking-widest text-blue-400 mb-0.5">App Store Synchronizace</label>
-                    <div class="flex gap-1">
-                        <input type="text" id="appSearchInput" placeholder="Zadej Instagram, Spotify, TikTok, Pinterest..." class="w-full h-5 bg-slate-900 border border-white/10 rounded px-1 text-[9px] text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-blue-500">
-                        <button onclick="searchAppStore()" class="bg-blue-600 hover:bg-blue-500 text-white px-2 rounded font-bold text-[8px] cursor-pointer shrink-0">Hledat</button>
+                <div class="bg-gradient-to-r from-blue-950/50 to-slate-900/60 p-2 rounded-lg border border-blue-500/20">
+                    <label class="block text-[7px] font-bold uppercase tracking-widest text-blue-400 mb-1 data-lang" data-key="searchTitle">App Store Synchronizace</label>
+                    <div class="flex gap-1.5">
+                        <input type="text" id="appSearchInput" placeholder="Instagram, Spotify, TikTok..." class="w-full h-6 bg-slate-900 border border-white/10 rounded px-1.5 text-[9px] text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-blue-500 font-medium">
+                        <button onclick="searchAppStore()" class="bg-blue-600 hover:bg-blue-500 text-white px-2.5 rounded font-bold text-[8px] cursor-pointer shrink-0 transition-colors data-lang" data-key="btnSearch">Hledat</button>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Formát Prvku</label>
-                    <div class="grid grid-cols-3 gap-0.5">
-                        <button onclick="setAssetType('icon')" id="type-icon" class="py-0.5 rounded border border-blue-500 bg-blue-500/10 text-[8px] font-bold text-white cursor-pointer">App Ikona</button>
-                        <button onclick="setAssetType('widget-s')" id="type-widget-s" class="py-0.5 rounded border border-white/10 bg-slate-950/40 text-[8px] font-bold text-slate-400 hover:text-white cursor-pointer">Malý Widget</button>
-                        <button onclick="setAssetType('widget-m')" id="type-widget-m" class="py-0.5 rounded border border-white/10 bg-slate-950/40 text-[8px] font-bold text-slate-400 hover:text-white cursor-pointer">Střední Widget</button>
+                    <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1 data-lang" data-key="formatTitle">Formát Prvku</label>
+                    <div class="grid grid-cols-3 gap-1">
+                        <button onclick="setAssetType('icon')" id="type-icon" class="py-1 rounded border border-blue-500 bg-blue-500/10 text-[8px] font-bold text-white cursor-pointer transition-all data-lang" data-key="typeIcon">App Ikona</button>
+                        <button onclick="setAssetType('widget-s')" id="type-widget-s" class="py-1 rounded border border-white/10 bg-slate-950/40 text-[8px] font-bold text-slate-400 hover:text-white cursor-pointer transition-all data-lang" data-key="typeWidgetS">Malý Widget</button>
+                        <button onclick="setAssetType('widget-m')" id="type-widget-m" class="py-1 rounded border border-white/10 bg-slate-950/40 text-[8px] font-bold text-slate-400 hover:text-white cursor-pointer transition-all data-lang" data-key="typeWidgetM">Střední Widget</button>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-1">
+                <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Barva Pozadí</label>
-                        <input type="color" id="bgColor" value="#1e1e2e" oninput="updatePreview()" class="w-full h-5 rounded border border-white/20 bg-transparent cursor-pointer p-0">
+                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1 data-lang" data-key="bgColorTitle">Barva Pozadí</label>
+                        <input type="color" id="bgColor" value="#1e1e2e" oninput="updatePreview()" class="w-full h-6 rounded border border-white/15 bg-transparent cursor-pointer p-0">
                     </div>
                     <div>
-                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Barva Symbolu</label>
-                        <input type="color" id="iconColor" value="#cdd6f4" oninput="updatePreview()" class="w-full h-5 rounded border border-white/20 bg-transparent cursor-pointer p-0">
+                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1 data-lang" data-key="fgColorTitle">Barva Symbolu</label>
+                        <input type="color" id="iconColor" value="#cdd6f4" oninput="updatePreview()" class="w-full h-6 rounded border border-white/15 bg-transparent cursor-pointer p-0">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-1">
+                <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Ikona / Symbol</label>
-                        <select id="iconSelect" onchange="updatePreview()" class="w-full h-5 bg-slate-950 border border-white/10 rounded px-0.5 text-[8px] font-bold text-slate-200">
-                            <option value="heart">Zdraví / Srdce</option>
-                            <option value="music">Hudba / Přehrávač</option>
-                            <option value="camera">Instagram / Fotoaparát</option>
-                            <option value="message-square">Zprávy / Chat</option>
-                            <option value="compass">Safari / Prohlížeč</option>
-                            <option value="wallet">Peněženka / Karty</option>
-                            <option value="cloud-sun">Počasí / Meteoradar</option>
-                            <option value="terminal">Kód / Vývojář</option>
-                            <option value="bell">Notifikace / Zvonění</option>
-                            <option value="layers">Aplikace / Knihovna</option>
-                        </select>
+                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1 data-lang" data-key="symbolTitle">Ikona / Symbol</label>
+                        <select id="iconSelect" onchange="updatePreview()" class="w-full h-6 bg-slate-950 border border-white/10 rounded px-1 text-[8px] font-bold text-slate-200 focus:outline-none focus:border-blue-500">
+                            </select>
                     </div>
                     <div>
-                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Název na ploše</label>
-                        <input type="text" id="assetLabel" value="App" oninput="updatePreview()" class="w-full h-5 bg-slate-950 border border-white/10 rounded px-1 text-[8px] text-slate-200">
+                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1 data-lang" data-key="labelTitle">Název na ploše</label>
+                        <input type="text" id="assetLabel" value="App" oninput="updatePreview()" class="w-full h-6 bg-slate-950 border border-white/10 rounded px-1.5 text-[8px] text-slate-200 font-medium">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Text ve Widgetu (např. hodnota)</label>
-                    <input type="text" id="elementText" placeholder="Např. 21°C nebo 12,5k" oninput="updatePreview()" class="w-full h-5 bg-slate-950 border border-white/10 rounded px-1 text-[8px] text-slate-200">
+                    <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1 data-lang" data-key="widgetTextTitle">Text ve Widgetu (např. hodnota)</label>
+                    <input type="text" id="elementText" placeholder="21°C / 12.5k" oninput="updatePreview()" class="w-full h-6 bg-slate-950 border border-white/10 rounded px-1.5 text-[8px] text-slate-200">
                 </div>
 
-                <div class="h-[1px] bg-white/5"></div>
+                <div class="h-[1px] bg-white/5 my-1"></div>
 
-                <div class="space-y-1">
-                    <button id="btn-save" onclick="saveToRegistry()" class="w-full bg-slate-800 hover:bg-slate-700 border border-white/10 text-white font-bold py-1 rounded text-[8px] flex items-center justify-center gap-1 transition-all cursor-pointer">
-                        <i data-lucide="save" class="w-2.5 h-2.5"></i> Uložit do paměti webu
+                <div class="space-y-1.5">
+                    <button id="btn-save" onclick="saveToRegistry()" class="w-full bg-slate-800 hover:bg-slate-700 border border-white/10 text-white font-bold py-1.5 rounded-lg text-[8px] flex items-center justify-center gap-1 transition-all cursor-pointer">
+                        <i data-lucide="save" class="w-2.5 h-2.5"></i> <span class="data-lang" data-key="btnSaveDb">Uložit do paměti webu</span>
                     </button>
                     
-                    <button id="smart-action-btn" onclick="executeSmartAction()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-1.5 rounded text-[9px] flex items-center justify-center gap-1 shadow-md transition-all cursor-pointer">
-                        <i id="smart-btn-icon" data-lucide="download" class="w-3 h-3"></i> <span id="smart-btn-text">Stáhnout jako .PNG</span>
+                    <button id="smart-action-btn" onclick="executeSmartAction()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-2 rounded-lg text-[9px] flex items-center justify-center gap-1.5 shadow-lg transition-all cursor-pointer hover:scale-[1.01]">
+                        <i id="smart-btn-icon" data-lucide="download" class="w-3 h-3"></i> <span id="smart-btn-text">Stáhnout .PNG</span>
                     </button>
                 </div>
             </div>
 
             <div class="lg:col-span-8 flex flex-col items-center justify-center p-1">
-                <div class="w-[210px] h-[400px] rounded-[32px] p-2 relative shadow-2xl border-[4px] border-slate-900 bg-slate-950 overflow-hidden select-none">
+                <div class="w-[220px] h-[410px] rounded-[36px] p-2 relative shadow-2xl border-[5px] border-slate-900 bg-slate-950 overflow-hidden select-none">
                     <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&auto=format&fit=crop');"></div>
                     
-                    <div class="w-14 h-3 bg-black rounded-full mx-auto mb-3 relative z-30"></div>
+                    <div class="w-14 h-3.5 bg-black rounded-full mx-auto mb-4 relative z-30 shadow-inner"></div>
 
-                    <div class="grid grid-cols-4 gap-2 p-1 relative z-10" id="ios-grid">
-                        <div class="flex flex-col items-center opacity-20"><div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center"><i data-lucide="phone" class="w-3 h-3 text-emerald-400"></i></div></div>
-                        <div class="flex flex-col items-center opacity-20"><div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center"><i data-lucide="mail" class="w-3 h-3 text-blue-400"></i></div></div>
+                    <div class="grid grid-cols-4 gap-2.5 p-1 relative z-10" id="ios-grid">
+                        <div class="flex flex-col items-center opacity-25"><div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center"><i data-lucide="phone" class="w-3.5 h-3.5 text-emerald-400"></i></div></div>
+                        <div class="flex flex-col items-center opacity-25"><div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center"><i data-lucide="mail" class="w-3.5 h-3.5 text-blue-400"></i></div></div>
 
                         <div id="preview-container" class="col-span-1 row-span-1 flex flex-col items-center justify-start">
-                            <div id="ios-element" class="w-8 h-8 rounded-lg shadow-lg flex flex-col items-center justify-center relative overflow-hidden transition-all">
-                                <div class="relative z-10 flex flex-col items-center justify-center w-full h-full p-0.5">
+                            <div id="ios-element" class="w-8 h-8 rounded-lg shadow-xl flex flex-col items-center justify-center relative overflow-hidden transition-all duration-300">
+                                <div class="relative z-10 flex flex-col items-center justify-center w-full h-full p-1">
                                     <i id="preview-icon" data-lucide="heart" class="w-4 h-4"></i>
-                                    <span id="preview-text" class="text-[4px] font-bold mt-0.5 hidden max-w-full truncate"></span>
+                                    <span id="preview-text" class="text-[4px] font-bold mt-0.5 hidden max-w-full truncate tracking-tight"></span>
                                 </div>
                             </div>
-                            <span id="element-label" class="text-[6px] text-white/90 font-medium mt-0.5 truncate max-w-[32px] drop-shadow-md">App</span>
+                            <span id="element-label" class="text-[6px] text-white/95 font-semibold mt-0.5 truncate max-w-[34px] drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">App</span>
                         </div>
 
-                        <div class="flex flex-col items-center opacity-20"><div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center"><i data-lucide="settings" class="w-3 h-3 text-slate-400"></i></div></div>
+                        <div class="flex flex-col items-center opacity-25"><div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center"><i data-lucide="settings" class="w-3.5 h-3.5 text-slate-400"></i></div></div>
                     </div>
 
-                    <div class="absolute bottom-2 left-2 right-2 h-8 ios-dock rounded-[14px] flex items-center justify-around px-2 shadow-lg">
-                        <div class="w-5 h-5 bg-white/20 rounded-md flex items-center justify-center"><i data-lucide="message-circle" class="w-2.5 h-2.5 text-white"></i></div>
-                        <div class="w-5 h-5 bg-white/20 rounded-md flex items-center justify-center"><i data-lucide="compass" class="w-2.5 h-2.5 text-white"></i></div>
+                    <div class="absolute bottom-2.5 left-2.5 right-2.5 h-8.5 ios-dock rounded-[16px] flex items-center justify-around px-2 shadow-xl">
+                        <div class="w-5.5 h-5.5 bg-white/20 rounded-md flex items-center justify-center"><i data-lucide="message-circle" class="w-3 h-3 text-white"></i></div>
+                        <div class="w-5.5 h-5.5 bg-white/20 rounded-md flex items-center justify-center"><i data-lucide="compass" class="w-3 h-3 text-white"></i></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="tab-community" class="hidden space-y-2">
-            <div class="flex justify-between items-center bg-slate-900/80 p-2 border border-white/5 rounded-lg">
-                <h2 class="text-[8px] font-bold text-white uppercase tracking-wider">Uložené ikony v paměti vašeho prohlížeče</h2>
-                <button onclick="clearRegistryFully()" class="bg-rose-950/40 hover:bg-rose-900/60 border border-rose-500/30 text-rose-400 py-0.5 px-1.5 rounded text-[7px] cursor-pointer transition-all">Vymazat paměť</button>
+        <div id="tab-community" class="hidden space-y-3">
+            <div class="flex justify-between items-center bg-slate-900/80 p-2.5 border border-white/5 rounded-xl">
+                <h2 class="text-[8px] font-bold text-white uppercase tracking-wider data-lang" data-key="repoTitle">Uložené ikony v paměti</h2>
+                <button onclick="clearRegistryFully()" class="bg-rose-950/40 hover:bg-rose-900/60 border border-rose-500/30 text-rose-400 py-1 px-2 rounded text-[7px] font-bold cursor-pointer transition-all data-lang" data-key="btnClearDb">Vymazat paměť</button>
             </div>
-            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-1.5" id="community-grid"></div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2" id="community-grid"></div>
         </div>
     </main>
 
@@ -151,8 +150,52 @@
 
     <script>
         let currentAssetType = 'icon';
+        let currentLang = 'cz';
         
-        // Rozsáhlá App Store databáze aplikací
+        // SLOVNÍK PRO MULTI-LANG TRANSLATOR (CZ / SK / EN)
+        const langPack = {
+            cz: {
+                subtitle: "ŽIVÉ IKONY & JAZYKY", tabEditor: "Editor", tabStorage: "Moje Úložiště",
+                searchTitle: "App Store Synchronizace", searchPlaceholder: "Zadej Instagram, Spotify, TikTok...",
+                btnSearch: "Hledat", formatTitle: "Formát Prvku", typeIcon: "App Ikona",
+                typeWidgetS: "Malý Widget", typeWidgetM: "Střední Widget", bgColorTitle: "Barva Pozadí",
+                fgColorTitle: "Barva Symbolu", symbolTitle: "Ikona / Symbol", labelTitle: "Název na ploše",
+                widgetTextTitle: "Text ve Widgetu (např. hodnota)", btnSaveDb: "Uložit do paměti webu",
+                savedOk: "Uloženo!", btnPng: "Stáhnout aktuální (.PNG)", btnZip: "Stáhnout kompletní ZIP balíček",
+                repoTitle: "Uložené ikony v paměti vašeho prohlížeče", btnClearDb: "Vymazat paměť",
+                emptyDb: "ŽÁDNÉ ULOŽENÉ IKONY", confirmClear: "Opravdu smazat celou lokální databázi ikon?",
+                btnLoad: "Načíst", btnDelete: "Smazat",
+                symbols: { heart: "Zdraví / Srdce", music: "Hudba / Přehrávač", camera: "Instagram / Fotoaparát", messageSquare: "Zprávy / Chat", compass: "Safari / Prohlížeč", wallet: "Peněženka", cloudSun: "Počasí / Radar", terminal: "Kód / Vývojář", bell: "Notifikace", layers: "Knihovna aplikací" }
+            },
+            sk: {
+                subtitle: "ŽIVÉ IKONY & JAZYKY", tabEditor: "Editor", tabStorage: "Moje Úložisko",
+                searchTitle: "App Store Synchronizácia", searchPlaceholder: "Zadaj Instagram, Spotify, TikTok...",
+                btnSearch: "Hľadať", formatTitle: "Formát Prvku", typeIcon: "App Ikona",
+                typeWidgetS: "Malý Widget", typeWidgetM: "Stredný Widget", bgColorTitle: "Farba Pozadia",
+                fgColorTitle: "Farba Symbolu", symbolTitle: "Ikona / Symbol", labelTitle: "Názov na ploche",
+                widgetTextTitle: "Text vo Widgete (napr. hodnota)", btnSaveDb: "Uložiť do pamäte webu",
+                savedOk: "Uložené!", btnPng: "Stiahnuť aktuálnu (.PNG)", btnZip: "Stiahnuť kompletný ZIP balíček",
+                repoTitle: "Uložené ikony v pamäti vášho prehliadača", btnClearDb: "Vymazať pamäť",
+                emptyDb: "ŽIADNE ULOŽENÉ IKONY", confirmClear: "Naozaj zmazať celú lokálnu databázu ikon?",
+                btnLoad: "Načítať", btnDelete: "Zmazať",
+                symbols: { heart: "Zdravie / Srdce", music: "Hudba / Prehrávač", camera: "Instagram / Fotoaparát", messageSquare: "Správy / Chat", compass: "Safari / Prehliadač", wallet: "Peňaženka", cloudSun: "Počasie / Radar", terminal: "Kód / Vývojár", bell: "Notifikácia", layers: "Knižnica aplikácií" }
+            },
+            en: {
+                subtitle: "LIVE ICONS & LANGUAGES", tabEditor: "Editor", tabStorage: "My Storage",
+                searchTitle: "App Store Sync", searchPlaceholder: "Enter Instagram, Spotify, TikTok...",
+                btnSearch: "Search", formatTitle: "Asset Format", typeIcon: "App Icon",
+                typeWidgetS: "Small Widget", typeWidgetM: "Medium Widget", bgColorTitle: "Background Color",
+                fgColorTitle: "Symbol Color", symbolTitle: "Icon / Symbol", labelTitle: "Home Screen Label",
+                widgetTextTitle: "Widget Subtext (e.g. value)", btnSaveDb: "Save to Web Memory",
+                savedOk: "Saved!", btnPng: "Download Current (.PNG)", btnZip: "Download Complete ZIP Pack",
+                repoTitle: "Saved Icons in Browser Local Storage", btnClearDb: "Wipe Storage",
+                emptyDb: "NO ICONS SAVED YET", confirmClear: "Are you sure you want to wipe all saved icons?",
+                btnLoad: "Load", btnDelete: "Delete",
+                symbols: { heart: "Health / Heart", music: "Music / Player", camera: "Instagram / Camera", messageSquare: "Messages / Chat", compass: "Safari / Browser", wallet: "Wallet / Cards", cloudSun: "Weather / Radar", terminal: "Code / Developer", bell: "Notifications", layers: "App Library" }
+            }
+        };
+
+        // DATABÁZE APLIKACÍ PRO APP STORE SYNCHRONIZACI
         const appStoreDatabase = {
             'spotify': { label: 'Spotify', bg: '#1db954', iconColor: '#ffffff', icon: 'music' },
             'instagram': { label: 'Instagram', bg: '#e1306c', iconColor: '#ffffff', icon: 'camera' },
@@ -162,12 +205,12 @@
             'tiktok': { label: 'TikTok', bg: '#000000', iconColor: '#00f2fe', icon: 'music' },
             'safari': { label: 'Safari', bg: '#1077e5', iconColor: '#ffffff', icon: 'compass' },
             'wallet': { label: 'Wallet', bg: '#1e1e1e', iconColor: '#ff9500', icon: 'wallet' },
-            'health': { label: 'Zdraví', bg: '#ff2d55', iconColor: '#ffffff', icon: 'heart' },
-            'messages': { label: 'Zprávy', bg: '#34c759', iconColor: '#ffffff', icon: 'message-square' },
+            'health': { label: 'Health', bg: '#ff2d55', iconColor: '#ffffff', icon: 'heart' },
+            'messages': { label: 'Messages', bg: '#34c759', iconColor: '#ffffff', icon: 'message-square' },
             'messenger': { label: 'Messenger', bg: '#006aff', iconColor: '#ffffff', icon: 'message-square' }
         };
 
-        // Lucide ikony mapované na SVG cesty pro čistý Canvas export bez externích knihoven
+        // VEKTOROVÉ CESTY PRO EXPORT CANVASU (Aby vygenerované PNG mělo přesný Lucide tvar)
         const canvasPathMap = {
             'heart': 'M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z',
             'music': 'M9 18V5l12-2v13M9 10l12-2M7 22a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm12-2a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z',
@@ -181,49 +224,92 @@
             'layers': 'm12 3-10 5 10 5 10-5-10-5ZM2 17l10 5 10-5M2 12l10 5 10-5'
         };
 
+        // START APLIKACE
         document.addEventListener("DOMContentLoaded", function() {
             if (!localStorage.getItem('ios_studio_db')) {
                 localStorage.setItem('ios_studio_db', JSON.stringify([]));
             }
-            updatePreview();
-            evalSmartButtonState();
+            changeLanguage('cz');
         });
 
+        // TRANSLATOR FUNKCE
+        function changeLanguage(lang) {
+            currentLang = lang;
+            ['cz', 'sk', 'en'].forEach(l => {
+                document.getElementById(`lang-${l}`).className = l === lang ? "px-1.5 py-0.5 rounded bg-slate-800 text-white cursor-pointer transition-all" : "px-1.5 py-0.5 rounded text-slate-400 hover:text-white cursor-pointer transition-all";
+            });
+
+            const pack = langPack[lang];
+            document.querySelectorAll('.data-lang').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if(pack[key]) el.innerText = pack[key];
+            });
+
+            document.getElementById('appSearchInput').placeholder = pack.searchPlaceholder;
+
+            // Přegenerování možností v Select boxu do zvoleného jazyka
+            const select = document.getElementById('iconSelect');
+            const currentSelectedValue = select.value || 'heart';
+            
+            select.innerHTML = `
+                <option value="heart">${pack.symbols.heart}</option>
+                <option value="music">${pack.symbols.music}</option>
+                <option value="camera">${pack.symbols.camera}</option>
+                <option value="message-square">${pack.symbols.messageSquare}</option>
+                <option value="compass">${pack.symbols.compass}</option>
+                <option value="wallet">${pack.symbols.wallet}</option>
+                <option value="cloud-sun">${pack.symbols.cloudSun}</option>
+                <option value="terminal">${pack.symbols.terminal}</option>
+                <option value="bell">${pack.symbols.bell}</option>
+                <option value="layers">${pack.symbols.layers}</option>
+            `;
+            select.value = currentSelectedValue;
+
+            updatePreview();
+            evalSmartButtonState();
+        }
+
+        // VYHLEDÁVÁNÍ S OKAMŽITÝM FIXEM IKONY
         function searchAppStore() {
             const query = document.getElementById('appSearchInput').value.toLowerCase().trim();
             if (!query) return;
+
+            const select = document.getElementById('iconSelect');
 
             if (appStoreDatabase[query]) {
                 const app = appStoreDatabase[query];
                 document.getElementById('assetLabel').value = app.label;
                 document.getElementById('bgColor').value = app.bg;
                 document.getElementById('iconColor').value = app.iconColor;
-                document.getElementById('iconSelect').value = app.icon;
-                updatePreview();
+                select.value = app.icon;
             } else {
-                // Inteligentní fallback generátor barvy
+                // Generické nastavení pro neznámé aplikace
                 document.getElementById('assetLabel').value = query.charAt(0).toUpperCase() + query.slice(1);
                 document.getElementById('bgColor').value = '#0284c7';
                 document.getElementById('iconColor').value = '#ffffff';
-                updatePreview();
             }
+
+            // VYVOLÁNÍ EVENTU PRO OKAMŽITOU ZMĚNU IKONY V LIVE PREVIEW
+            select.dispatchEvent(new Event('change'));
         }
 
+        // PŘEPÍNAČ STRÁNEK
         function switchTab(target) {
             document.getElementById('tab-maker').classList.toggle('hidden', target !== 'maker');
             document.getElementById('tab-community').classList.toggle('hidden', target !== 'community');
             
-            document.getElementById('btn-maker').className = target === 'maker' ? "px-2 py-0.5 rounded bg-blue-600 font-bold text-[8px] text-white cursor-pointer" : "px-2 py-0.5 rounded font-bold text-[8px] text-slate-400 hover:text-white cursor-pointer";
-            document.getElementById('btn-community').className = target === 'community' ? "px-2 py-0.5 rounded bg-blue-600 font-bold text-[8px] text-white cursor-pointer" : "px-2 py-0.5 rounded font-bold text-[8px] text-slate-400 hover:text-white cursor-pointer";
+            document.getElementById('btn-maker').className = target === 'maker' ? "px-2.5 py-0.5 rounded bg-blue-600 font-bold text-[8px] text-white cursor-pointer transition-all" : "px-2.5 py-0.5 rounded font-bold text-[8px] text-slate-400 hover:text-white cursor-pointer transition-all";
+            document.getElementById('btn-community').className = target === 'community' ? "px-2.5 py-0.5 rounded bg-blue-600 font-bold text-[8px] text-white cursor-pointer transition-all" : "px-2.5 py-0.5 rounded font-bold text-[8px] text-slate-400 hover:text-white cursor-pointer transition-all";
 
             if (target === 'community') renderRegistryGrid();
             else evalSmartButtonState();
         }
 
+        // PŘEPÍNAČ FORMÁTŮ (IKONA / WIDGET)
         function setAssetType(type) {
             currentAssetType = type;
             ['icon', 'widget-s', 'widget-m'].forEach(t => {
-                document.getElementById(`type-${t}`).className = t === type ? "py-0.5 rounded border border-blue-500 bg-blue-500/10 text-[8px] font-bold text-white cursor-pointer" : "py-0.5 rounded border border-white/10 bg-slate-950/40 text-[8px] font-bold text-slate-400 hover:text-white cursor-pointer";
+                document.getElementById(`type-${t}`).className = t === type ? "py-1 rounded border border-blue-500 bg-blue-500/10 text-[8px] font-bold text-white cursor-pointer transition-all" : "py-1 rounded border border-white/10 bg-slate-950/40 text-[8px] font-bold text-slate-400 hover:text-white cursor-pointer transition-all";
             });
 
             const container = document.getElementById('preview-container');
@@ -232,20 +318,21 @@
 
             if (type === 'icon') {
                 container.className = "col-span-1 row-span-1 flex flex-col items-center justify-start";
-                element.className = "w-8 h-8 rounded-lg shadow-lg flex flex-col items-center justify-center relative overflow-hidden";
+                element.className = "w-8 h-8 rounded-lg shadow-xl flex flex-col items-center justify-center relative overflow-hidden";
                 label.classList.remove('hidden');
             } else if (type === 'widget-s') {
                 container.className = "col-span-2 row-span-2 flex flex-col items-center justify-start";
-                element.className = "w-[72px] h-[72px] rounded-[14px] shadow-lg flex flex-col items-center justify-center relative overflow-hidden";
+                element.className = "w-[72px] h-[72px] rounded-[14px] shadow-xl flex flex-col items-center justify-center relative overflow-hidden";
                 label.classList.add('hidden');
             } else if (type === 'widget-m') {
                 container.className = "col-span-4 row-span-2 flex flex-col items-center justify-start";
-                element.className = "w-[152px] h-[72px] rounded-[14px] shadow-lg flex flex-col items-center justify-center relative overflow-hidden";
+                element.className = "w-[152px] h-[72px] rounded-[14px] shadow-xl flex flex-col items-center justify-center relative overflow-hidden";
                 label.classList.add('hidden');
             }
             updatePreview();
         }
 
+        // AKTUALIZACE ŽIVÉHO NÁHLEDU (PREVIEW)
         function updatePreview() {
             const bg = document.getElementById('bgColor').value;
             const fg = document.getElementById('iconColor').value;
@@ -278,6 +365,7 @@
             lucide.createIcons();
         }
 
+        // VYHODNOCENÍ STAVU CHYTRÉHO TLAČÍTKA
         function evalSmartButtonState() {
             const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
             document.getElementById('global-counter').innerText = db.length;
@@ -285,26 +373,28 @@
             const btn = document.getElementById('smart-action-btn');
             const icon = document.getElementById('smart-btn-icon');
             const text = document.getElementById('smart-btn-text');
+            const pack = langPack[currentLang];
 
             if (db.length >= 2) {
-                btn.className = "w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold py-1.5 rounded text-[9px] flex items-center justify-center gap-1 shadow-md cursor-pointer";
+                btn.className = "w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold py-2 rounded-lg text-[9px] flex items-center justify-center gap-1.5 shadow-lg cursor-pointer transition-all hover:scale-[1.01]";
                 icon.setAttribute('data-lucide', 'archive');
-                text.innerText = `Stáhnout kompletní ZIP balíček (${db.length} ikon)`;
+                text.innerText = `${pack.btnZip} (${db.length})`;
             } else {
-                btn.className = "w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-1.5 rounded text-[9px] flex items-center justify-center gap-1 shadow-md cursor-pointer";
+                btn.className = "w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-2 rounded-lg text-[9px] flex items-center justify-center gap-1.5 shadow-lg cursor-pointer transition-all hover:scale-[1.01]";
                 icon.setAttribute('data-lucide', 'download');
-                text.innerText = "Stáhnout aktuální ikonu (.PNG)";
+                text.innerText = pack.btnPng;
             }
             lucide.createIcons();
         }
 
+        // SPUŠTĚNÍ CHYTRÉ AKCE DETEKCE STAŽENÍ
         function executeSmartAction() {
             const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
             if (db.length >= 2) downloadZipArchive(db);
             else downloadSingleAsset();
         }
 
-        // Nativní Canvas Generátor (1024px HD) - Nepotřebuje html2canvas, funguje 100% vždy
+        // RENDER VYSOKÉHO ROZLIŠENÍ NA SKRYTÉ PLÁTNO (CANVAS EXPORT)
         function drawAssetToCanvas(item, callback) {
             const canvas = document.getElementById('exportCanvas');
             const ctx = canvas.getContext('2d');
@@ -314,24 +404,23 @@
             canvas.width = w;
             canvas.height = h;
 
-            // Pozadí s iOS zaoblením rohů
+            // Vyčištění a nakreslení zaobleného pozadí
             ctx.fillStyle = item.bgColor;
             const radius = 200;
             ctx.beginPath();
             ctx.roundRect(0, 0, w, h, radius);
             ctx.fill();
 
-            // Vykreslení ikony z vektorové mapy
+            // Styl pro ikonu
             ctx.strokeStyle = item.iconColor;
             ctx.lineWidth = 32;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
             
             ctx.save();
-            // Centrovaná škála
             if (item.type === 'icon') {
                 ctx.translate(w/2 - 256, h/2 - 256);
-                ctx.scale(21.33, 21.33); // 24px vektor -> 512px ikona
+                ctx.scale(21.33, 21.33);
             } else {
                 ctx.translate(w/2 - 180, h/2 - 240);
                 ctx.scale(15, 15);
@@ -342,7 +431,7 @@
             ctx.stroke(p);
             ctx.restore();
 
-            // Pokud jde o widget s doprovodným textem
+            // Pokud jde o Widget s doplňkovým textem
             if (item.type !== 'icon' && item.txt) {
                 ctx.fillStyle = item.iconColor;
                 ctx.font = "bold 75px sans-serif";
@@ -353,6 +442,7 @@
             callback(canvas.toDataURL('image/png'));
         }
 
+        // STAŽENÍ JEDNÉ IKONY (.PNG)
         function downloadSingleAsset() {
             const currentItem = {
                 name: document.getElementById('assetLabel').value || 'app_icon',
@@ -371,11 +461,12 @@
             });
         }
 
+        // UKLÁDÁNÍ DO PAMĚTI (LOCAL STORAGE)
         function saveToRegistry() {
             const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
             const record = {
                 id: Date.now(),
-                name: document.getElementById('assetLabel').value || 'Nepojmenovaná ikona',
+                name: document.getElementById('assetLabel').value || 'Unnamed Icon',
                 type: currentAssetType,
                 bgColor: document.getElementById('bgColor').value,
                 iconColor: document.getElementById('iconColor').value,
@@ -386,37 +477,39 @@
             db.unshift(record);
             localStorage.setItem('ios_studio_db', JSON.stringify(db));
             
-            // Vizuální odezva tlačítka
+            // Animace úspěšného uložení na tlačítku
             const btn = document.getElementById('btn-save');
             const origText = btn.innerHTML;
-            btn.innerHTML = `<i data-lucide="check-circle" class="w-2.5 h-2.5 text-emerald-400"></i> Uloženo!`;
+            btn.innerHTML = `<i data-lucide="check-circle" class="w-2.5 h-2.5 text-emerald-400"></i> ${langPack[currentLang].savedOk}`;
             lucide.createIcons();
             setTimeout(() => { btn.innerHTML = origText; lucide.createIcons(); }, 1000);
 
             evalSmartButtonState();
         }
 
+        // VYRENDEROVÁNÍ KARET V ÚLOŽIŠTI
         function renderRegistryGrid() {
             const grid = document.getElementById('community-grid');
             const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
+            const pack = langPack[currentLang];
             grid.innerHTML = "";
 
             if (db.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-6 text-center text-slate-600 font-mono text-[8px]">ŽÁDNÉ ULOŽENÉ IKONY V PROHLÍŽEČI</div>`;
+                grid.innerHTML = `<div class="col-span-full py-8 text-center text-slate-600 font-mono text-[8px] uppercase tracking-wider">${pack.emptyDb}</div>`;
                 return;
             }
 
             db.forEach(item => {
                 const card = document.createElement('div');
-                card.className = "bg-slate-900/60 border border-white/5 rounded-lg p-2 flex flex-col items-center justify-between text-center shadow-md";
+                card.className = "bg-slate-900/60 border border-white/5 rounded-xl p-2 flex flex-col items-center justify-between text-center shadow-lg";
                 card.innerHTML = `
-                    <div class="w-6 h-6 rounded flex items-center justify-center shadow" style="background-color: ${item.bgColor}">
-                        <i data-lucide="${item.icon}" class="w-3.5 h-3.5" style="color: ${item.iconColor}"></i>
+                    <div class="w-7 h-7 rounded-lg flex items-center justify-center shadow-md" style="background-color: ${item.bgColor}">
+                        <i data-lucide="${item.icon}" class="w-4 h-4" style="color: ${item.iconColor}"></i>
                     </div>
-                    <p class="font-bold text-[8px] text-slate-300 truncate w-full mt-1.5">${item.name}</p>
-                    <div class="grid grid-cols-2 gap-1 w-full mt-2">
-                        <button onclick="loadAssetToEditor(${item.id})" class="py-0.5 bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white rounded text-[7px] font-bold cursor-pointer transition-all">Načíst</button>
-                        <button onclick="deleteAsset(${item.id})" class="py-0.5 bg-rose-950/40 hover:bg-rose-600 text-rose-400 hover:text-white rounded text-[7px] cursor-pointer transition-all">Smazat</button>
+                    <p class="font-bold text-[8px] text-slate-300 truncate w-full mt-2 px-1">${item.name}</p>
+                    <div class="grid grid-cols-2 gap-1 w-full mt-2.5">
+                        <button onclick="loadAssetToEditor(${item.id})" class="py-0.5 bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white rounded font-bold text-[7px] cursor-pointer transition-all">${pack.btnLoad}</button>
+                        <button onclick="deleteAsset(${item.id})" class="py-0.5 bg-rose-950/40 hover:bg-rose-600 text-rose-400 hover:text-white rounded font-bold text-[7px] cursor-pointer transition-all">${pack.btnDelete}</button>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -425,6 +518,7 @@
             document.getElementById('global-counter').innerText = db.length;
         }
 
+        // NAČTENÍ IKONY Z ÚLOŽIŠTĚ ZPĚT DO EDITORU
         function loadAssetToEditor(id) {
             const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
             const item = db.find(x => x.id === id);
@@ -433,13 +527,17 @@
             document.getElementById('assetLabel').value = item.name;
             document.getElementById('bgColor').value = item.bgColor;
             document.getElementById('iconColor').value = item.iconColor;
-            document.getElementById('iconSelect').value = item.icon;
+            
+            const select = document.getElementById('iconSelect');
+            select.value = item.icon;
             document.getElementById('elementText').value = item.txt || "";
 
             setAssetType(item.type);
+            select.dispatchEvent(new Event('change'));
             switchTab('maker');
         }
 
+        // VYMAZÁNÍ JEDNÉ IKONY
         function deleteAsset(id) {
             let db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
             db = db.filter(x => x.id !== id);
@@ -447,13 +545,15 @@
             renderRegistryGrid();
         }
 
+        // KOMPLETNÍ PROMAZÁNÍ DATABÁZE
         function clearRegistryFully() {
-            if(confirm("Opravdu smazat celou lokální databázi ikon?")) {
+            if(confirm(langPack[currentLang].confirmClear)) {
                 localStorage.setItem('ios_studio_db', JSON.stringify([]));
                 renderRegistryGrid();
             }
         }
 
+        // KOMPRESE DO ZIP ARCHIVU (Pro hromadné stahování více ikon najednou)
         function downloadZipArchive(db) {
             const zip = new JSZip();
             let loadedCount = 0;
