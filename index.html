@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iOS Studio Ultimate Pro</title>
+    <title>iOS Studio Ultimate Pro v2</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -80,7 +80,7 @@
                     <div>
                         <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1 data-lang" data-key="symbolTitle">Ikona / Symbol</label>
                         <select id="iconSelect" onchange="updatePreview()" class="w-full h-6 bg-slate-950 border border-white/10 rounded px-1 text-[8px] font-bold text-slate-200 focus:outline-none focus:border-blue-500">
-                            </select>
+                        </select>
                     </div>
                     <div>
                         <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1 data-lang" data-key="labelTitle">Název na ploše</label>
@@ -109,7 +109,6 @@
             <div class="lg:col-span-8 flex flex-col items-center justify-center p-1">
                 <div class="w-[220px] h-[410px] rounded-[36px] p-2 relative shadow-2xl border-[5px] border-slate-900 bg-slate-950 overflow-hidden select-none">
                     <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&auto=format&fit=crop');"></div>
-                    
                     <div class="w-14 h-3.5 bg-black rounded-full mx-auto mb-4 relative z-30 shadow-inner"></div>
 
                     <div class="grid grid-cols-4 gap-2.5 p-1 relative z-10" id="ios-grid">
@@ -118,10 +117,8 @@
 
                         <div id="preview-container" class="col-span-1 row-span-1 flex flex-col items-center justify-start">
                             <div id="ios-element" class="w-8 h-8 rounded-lg shadow-xl flex flex-col items-center justify-center relative overflow-hidden transition-all duration-300">
-                                <div class="relative z-10 flex flex-col items-center justify-center w-full h-full p-1">
-                                    <i id="preview-icon" data-lucide="heart" class="w-4 h-4"></i>
-                                    <span id="preview-text" class="text-[4px] font-bold mt-0.5 hidden max-w-full truncate tracking-tight"></span>
-                                </div>
+                                <div id="live-svg-target" class="w-full h-full flex flex-col items-center justify-center p-1">
+                                    </div>
                             </div>
                             <span id="element-label" class="text-[6px] text-white/95 font-semibold mt-0.5 truncate max-w-[34px] drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">App</span>
                         </div>
@@ -152,50 +149,48 @@
         let currentAssetType = 'icon';
         let currentLang = 'cz';
         
-        // SLOVNÍK PRO MULTI-LANG TRANSLATOR (CZ / SK / EN)
         const langPack = {
             cz: {
                 subtitle: "ŽIVÉ IKONY & JAZYKY", tabEditor: "Editor", tabStorage: "Moje Úložiště",
-                searchTitle: "App Store Synchronizace", searchPlaceholder: "Zadej Instagram, Spotify, TikTok...",
+                searchTitle: "App Store Synchronizace", searchPlaceholder: "Zadej Instagram, Spotify...",
                 btnSearch: "Hledat", formatTitle: "Formát Prvku", typeIcon: "App Ikona",
                 typeWidgetS: "Malý Widget", typeWidgetM: "Střední Widget", bgColorTitle: "Barva Pozadí",
                 fgColorTitle: "Barva Symbolu", symbolTitle: "Ikona / Symbol", labelTitle: "Název na ploše",
-                widgetTextTitle: "Text ve Widgetu (např. hodnota)", btnSaveDb: "Uložit do paměti webu",
+                widgetTextTitle: "Text ve Widgetu", btnSaveDb: "Uložit do paměti webu",
                 savedOk: "Uloženo!", btnPng: "Stáhnout aktuální (.PNG)", btnZip: "Stáhnout kompletní ZIP balíček",
-                repoTitle: "Uložené ikony v paměti vašeho prohlížeče", btnClearDb: "Vymazat paměť",
-                emptyDb: "ŽÁDNÉ ULOŽENÉ IKONY", confirmClear: "Opravdu smazat celou lokální databázi ikon?",
+                repoTitle: "Uložené ikony v paměti", btnClearDb: "Vymazat paměť",
+                emptyDb: "ŽÁDNÉ ULOŽENÉ IKONY", confirmClear: "Opravdu smazat celou databázi?",
                 btnLoad: "Načíst", btnDelete: "Smazat",
-                symbols: { heart: "Zdraví / Srdce", music: "Hudba / Přehrávač", camera: "Instagram / Fotoaparát", messageSquare: "Zprávy / Chat", compass: "Safari / Prohlížeč", wallet: "Peněženka", cloudSun: "Počasí / Radar", terminal: "Kód / Vývojář", bell: "Notifikace", layers: "Knihovna aplikací" }
+                symbols: { bell: "Zvonek / Notifikace", heart: "Srdce / Zdraví", music: "Hudba / Spotify", camera: "Instagram / Fotoaparát", messageSquare: "Zprávy / Chat", compass: "Safari / Kompas", wallet: "Peněženka", cloudSun: "Počasí", terminal: "Kód", layers: "Vrstvy / Složky" }
             },
             sk: {
                 subtitle: "ŽIVÉ IKONY & JAZYKY", tabEditor: "Editor", tabStorage: "Moje Úložisko",
-                searchTitle: "App Store Synchronizácia", searchPlaceholder: "Zadaj Instagram, Spotify, TikTok...",
+                searchTitle: "App Store Synchronizácia", searchPlaceholder: "Zadaj Instagram, Spotify...",
                 btnSearch: "Hľadať", formatTitle: "Formát Prvku", typeIcon: "App Ikona",
                 typeWidgetS: "Malý Widget", typeWidgetM: "Stredný Widget", bgColorTitle: "Farba Pozadia",
                 fgColorTitle: "Farba Symbolu", symbolTitle: "Ikona / Symbol", labelTitle: "Názov na ploche",
-                widgetTextTitle: "Text vo Widgete (napr. hodnota)", btnSaveDb: "Uložiť do pamäte webu",
-                savedOk: "Uložené!", btnPng: "Stiahnuť aktuálnu (.PNG)", btnZip: "Stiahnuť kompletný ZIP balíček",
-                repoTitle: "Uložené ikony v pamäti vášho prehliadača", btnClearDb: "Vymazať pamäť",
-                emptyDb: "ŽIADNE ULOŽENÉ IKONY", confirmClear: "Naozaj zmazať celú lokálnu databázu ikon?",
+                widgetTextTitle: "Text vo Widgete", btnSaveDb: "Uložiť do pamäte",
+                savedOk: "Uložené!", btnPng: "Stiahnuť (.PNG)", btnZip: "Stiahnuť kompletný ZIP",
+                repoTitle: "Uložené ikony v pamäti", btnClearDb: "Vymazať pamäť",
+                emptyDb: "ŽIADNE ULOŽENÉ IKONY", confirmClear: "Naozaj zmazať všetko?",
                 btnLoad: "Načítať", btnDelete: "Zmazať",
-                symbols: { heart: "Zdravie / Srdce", music: "Hudba / Prehrávač", camera: "Instagram / Fotoaparát", messageSquare: "Správy / Chat", compass: "Safari / Prehliadač", wallet: "Peňaženka", cloudSun: "Počasie / Radar", terminal: "Kód / Vývojár", bell: "Notifikácia", layers: "Knižnica aplikácií" }
+                symbols: { bell: "Zvonček / Notifikácie", heart: "Srdce / Zdravie", music: "Hudba / Spotify", camera: "Instagram / Fotoaparát", messageSquare: "Správy / Chat", compass: "Safari / Kompas", wallet: "Peňaženka", cloudSun: "Počasie", terminal: "Kód", layers: "Vrstvy / Zložky" }
             },
             en: {
                 subtitle: "LIVE ICONS & LANGUAGES", tabEditor: "Editor", tabStorage: "My Storage",
-                searchTitle: "App Store Sync", searchPlaceholder: "Enter Instagram, Spotify, TikTok...",
+                searchTitle: "App Store Sync", searchPlaceholder: "Enter Instagram...",
                 btnSearch: "Search", formatTitle: "Asset Format", typeIcon: "App Icon",
                 typeWidgetS: "Small Widget", typeWidgetM: "Medium Widget", bgColorTitle: "Background Color",
-                fgColorTitle: "Symbol Color", symbolTitle: "Icon / Symbol", labelTitle: "Home Screen Label",
-                widgetTextTitle: "Widget Subtext (e.g. value)", btnSaveDb: "Save to Web Memory",
+                fgColorTitle: "Symbol Color", symbolTitle: "Icon / Symbol", labelTitle: "Label",
+                widgetTextTitle: "Widget Text", btnSaveDb: "Save to Web Memory",
                 savedOk: "Saved!", btnPng: "Download Current (.PNG)", btnZip: "Download Complete ZIP Pack",
-                repoTitle: "Saved Icons in Browser Local Storage", btnClearDb: "Wipe Storage",
-                emptyDb: "NO ICONS SAVED YET", confirmClear: "Are you sure you want to wipe all saved icons?",
+                repoTitle: "Saved Icons in Browser", btnClearDb: "Wipe Storage",
+                emptyDb: "NO ICONS SAVED YET", confirmClear: "Are you sure you want to wipe storage?",
                 btnLoad: "Load", btnDelete: "Delete",
-                symbols: { heart: "Health / Heart", music: "Music / Player", camera: "Instagram / Camera", messageSquare: "Messages / Chat", compass: "Safari / Browser", wallet: "Wallet / Cards", cloudSun: "Weather / Radar", terminal: "Code / Developer", bell: "Notifications", layers: "App Library" }
+                symbols: { bell: "Bell / Notifications", heart: "Heart / Health", music: "Music / Spotify", camera: "Instagram / Camera", messageSquare: "Messages / Chat", compass: "Safari / Compass", wallet: "Wallet", cloudSun: "Weather", terminal: "Code", layers: "Layers / Folders" }
             }
         };
 
-        // DATABÁZE APLIKACÍ PRO APP STORE SYNCHRONIZACI
         const appStoreDatabase = {
             'spotify': { label: 'Spotify', bg: '#1db954', iconColor: '#ffffff', icon: 'music' },
             'instagram': { label: 'Instagram', bg: '#e1306c', iconColor: '#ffffff', icon: 'camera' },
@@ -207,24 +202,23 @@
             'wallet': { label: 'Wallet', bg: '#1e1e1e', iconColor: '#ff9500', icon: 'wallet' },
             'health': { label: 'Health', bg: '#ff2d55', iconColor: '#ffffff', icon: 'heart' },
             'messages': { label: 'Messages', bg: '#34c759', iconColor: '#ffffff', icon: 'message-square' },
-            'messenger': { label: 'Messenger', bg: '#006aff', iconColor: '#ffffff', icon: 'message-square' }
+            'bell': { label: 'Alerts', bg: '#ff9500', iconColor: '#ffffff', icon: 'bell' }
         };
 
-        // VEKTOROVÉ CESTY PRO EXPORT CANVASU (Aby vygenerované PNG mělo přesný Lucide tvar)
-        const canvasPathMap = {
-            'heart': 'M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z',
-            'music': 'M9 18V5l12-2v13M9 10l12-2M7 22a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm12-2a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z',
-            'camera': 'M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z M12 17a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z',
-            'message-square': 'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z',
-            'compass': 'M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm0-13l1.5 4.5L18 12l-4.5 1.5L12 18l-1.5-4.5L6 12l4.5-1.5L12 9z',
-            'wallet': 'M21 12V7H5a2 2 0 0 1 0-4h14v4M3 5v14a2 2 0 0 0 2 2h16v-5M16 12h4v4h-4z',
-            'cloud-sun': 'M12 2v2M4.22 4.22l1.42 1.42M1 12h2M21 12h2M18.36 5.64l1.42-1.42M22 17a3 3 0 0 1-3 3H7a5 5 0 0 1-1-9.9M12 14a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z',
-            'terminal': 'm4 17 6-6-6-6M12 19h8',
-            'bell': 'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9ZM10.3 21a1.94 1.94 0 0 0 3.4 0',
-            'layers': 'm12 3-10 5 10 5 10-5-10-5ZM2 17l10 5 10-5M2 12l10 5 10-5'
+        // VNITŘNÍ SVG DEFINICE PRO STOPROCENTNĚ OSTRÝ A NEZPRASKANÝ EXPORT IKON
+        const svgPathTemplates = {
+            'bell': '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" stroke-linecap="round" stroke-linejoin="round"/>',
+            'heart': '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" stroke-linecap="round" stroke-linejoin="round"/>',
+            'music': '<path d="M9 18V5l12-2v13" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 10l12-2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="19" r="3"/><circle cx="17" cy="17" r="3"/>',
+            'camera': '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="13" r="3"/>',
+            'message-square': '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linecap="round" stroke-linejoin="round"/>',
+            'compass': '<circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>',
+            'wallet': '<path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 12h4v4h-4z"/>',
+            'cloud-sun': '<path d="M12 2v2M4.22 4.22l1.42 1.42M1 12h2M21 12h2M18.36 5.64l1.42-1.42" stroke-linecap="round"/><path d="M22 17a3 3 0 0 1-3 3H7a5 5 0 0 1-1-9.9 3 3 0 0 1 5.9-1.1 4 4 0 0 1 7.1 4Z" stroke-linecap="round" stroke-linejoin="round"/>',
+            'terminal': '<polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/>',
+            'layers': '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>'
         };
 
-        // START APLIKACE
         document.addEventListener("DOMContentLoaded", function() {
             if (!localStorage.getItem('ios_studio_db')) {
                 localStorage.setItem('ios_studio_db', JSON.stringify([]));
@@ -232,7 +226,6 @@
             changeLanguage('cz');
         });
 
-        // TRANSLATOR FUNKCE
         function changeLanguage(lang) {
             currentLang = lang;
             ['cz', 'sk', 'en'].forEach(l => {
@@ -247,35 +240,21 @@
 
             document.getElementById('appSearchInput').placeholder = pack.searchPlaceholder;
 
-            // Přegenerování možností v Select boxu do zvoleného jazyka
             const select = document.getElementById('iconSelect');
-            const currentSelectedValue = select.value || 'heart';
+            const currentSelectedValue = select.value || 'bell';
             
-            select.innerHTML = `
-                <option value="heart">${pack.symbols.heart}</option>
-                <option value="music">${pack.symbols.music}</option>
-                <option value="camera">${pack.symbols.camera}</option>
-                <option value="message-square">${pack.symbols.messageSquare}</option>
-                <option value="compass">${pack.symbols.compass}</option>
-                <option value="wallet">${pack.symbols.wallet}</option>
-                <option value="cloud-sun">${pack.symbols.cloudSun}</option>
-                <option value="terminal">${pack.symbols.terminal}</option>
-                <option value="bell">${pack.symbols.bell}</option>
-                <option value="layers">${pack.symbols.layers}</option>
-            `;
+            select.innerHTML = Object.keys(svgPathTemplates).map(key => `<option value="${key}">${pack.symbols[key]}</option>`).join('');
             select.value = currentSelectedValue;
 
             updatePreview();
             evalSmartButtonState();
         }
 
-        // VYHLEDÁVÁNÍ S OKAMŽITÝM FIXEM IKONY
         function searchAppStore() {
             const query = document.getElementById('appSearchInput').value.toLowerCase().trim();
             if (!query) return;
 
             const select = document.getElementById('iconSelect');
-
             if (appStoreDatabase[query]) {
                 const app = appStoreDatabase[query];
                 document.getElementById('assetLabel').value = app.label;
@@ -283,29 +262,20 @@
                 document.getElementById('iconColor').value = app.iconColor;
                 select.value = app.icon;
             } else {
-                // Generické nastavení pro neznámé aplikace
                 document.getElementById('assetLabel').value = query.charAt(0).toUpperCase() + query.slice(1);
                 document.getElementById('bgColor').value = '#0284c7';
                 document.getElementById('iconColor').value = '#ffffff';
             }
-
-            // VYVOLÁNÍ EVENTU PRO OKAMŽITOU ZMĚNU IKONY V LIVE PREVIEW
             select.dispatchEvent(new Event('change'));
         }
 
-        // PŘEPÍNAČ STRÁNEK
         function switchTab(target) {
             document.getElementById('tab-maker').classList.toggle('hidden', target !== 'maker');
             document.getElementById('tab-community').classList.toggle('hidden', target !== 'community');
-            
-            document.getElementById('btn-maker').className = target === 'maker' ? "px-2.5 py-0.5 rounded bg-blue-600 font-bold text-[8px] text-white cursor-pointer transition-all" : "px-2.5 py-0.5 rounded font-bold text-[8px] text-slate-400 hover:text-white cursor-pointer transition-all";
-            document.getElementById('btn-community').className = target === 'community' ? "px-2.5 py-0.5 rounded bg-blue-600 font-bold text-[8px] text-white cursor-pointer transition-all" : "px-2.5 py-0.5 rounded font-bold text-[8px] text-slate-400 hover:text-white cursor-pointer transition-all";
-
             if (target === 'community') renderRegistryGrid();
             else evalSmartButtonState();
         }
 
-        // PŘEPÍNAČ FORMÁTŮ (IKONA / WIDGET)
         function setAssetType(type) {
             currentAssetType = type;
             ['icon', 'widget-s', 'widget-m'].forEach(t => {
@@ -332,40 +302,54 @@
             updatePreview();
         }
 
-        // AKTUALIZACE ŽIVÉHO NÁHLEDU (PREVIEW)
-        function updatePreview() {
-            const bg = document.getElementById('bgColor').value;
-            const fg = document.getElementById('iconColor').value;
-            const icon = document.getElementById('iconSelect').value;
-            const text = document.getElementById('elementText').value;
-
-            document.getElementById('element-label').innerText = document.getElementById('assetLabel').value || "App";
+        // GENERUJE ČISTÉ LIVE SVG PRO DOKONALÝ NÁHLED A EXPORT BEZ DEFORMACÍ
+        function buildSvgMarkup(item, viewW, viewH, forExport = false) {
+            const size = forExport ? 1024 : 64;
+            const strokeW = forExport ? 40 : 2.5;
+            const radius = forExport ? 220 : 14;
+            const finalW = item.type === 'widget-m' ? (forExport ? 2112 : 132) : size;
             
-            const element = document.getElementById('ios-element');
-            const pIcon = document.getElementById('preview-icon');
-            const pText = document.getElementById('preview-text');
-
-            element.style.backgroundColor = bg;
-            pIcon.style.color = fg;
-            pIcon.setAttribute('data-lucide', icon);
-
-            if (currentAssetType === 'icon') {
-                pIcon.className = "w-4 h-4";
-                pText.classList.add('hidden');
-            } else {
-                pIcon.className = "w-4 h-4";
-                if(text.trim()) {
-                    pText.innerText = text;
-                    pText.style.color = fg;
-                    pText.classList.remove('hidden');
-                } else {
-                    pText.classList.add('hidden');
-                }
+            const paths = svgPathTemplates[item.icon] || svgPathTemplates['bell'];
+            
+            let textElement = "";
+            let iconTransform = `translate(${(finalW - size)/2}, ${(size - size)/2})`;
+            
+            // Posun ikony nahoru, pokud je dole doplňkový text widgetu
+            if (item.type !== 'icon' && item.txt) {
+                const moveUp = forExport ? -80 : -5;
+                iconTransform = `translate(${(finalW - size)/2}, ${(size - size)/2 + moveUp})`;
+                
+                const fontSize = forExport ? 72 : 5;
+                const textY = forExport ? 780 : 49;
+                textElement = `<text x="${finalW / 2}" y="${textY}" fill="${item.iconColor}" font-family="sans-serif" font-weight="bold" font-size="${fontSize}" text-anchor="middle" letter-spacing="2">${item.txt.toUpperCase()}</text>`;
             }
-            lucide.createIcons();
+
+            return `
+                <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 ${finalW} ${size}">
+                    <rect width="${finalW}" height="${size}" rx="${radius}" fill="${item.bgColor}"/>
+                    <g transform="${iconTransform}">
+                        <g transform="scale(${forExport ? 42.66 : 2.66})" fill="none" stroke="${item.iconColor}" stroke-width="${strokeW / (forExport ? 42.66 : 2.66)}">
+                            ${paths}
+                        </g>
+                    </g>
+                    ${textElement}
+                </svg>
+            `;
         }
 
-        // VYHODNOCENÍ STAVU CHYTRÉHO TLAČÍTKA
+        function updatePreview() {
+            const currentItem = {
+                type: currentAssetType,
+                bgColor: document.getElementById('bgColor').value,
+                iconColor: document.getElementById('iconColor').value,
+                icon: document.getElementById('iconSelect').value,
+                txt: document.getElementById('elementText').value
+            };
+
+            document.getElementById('element-label').innerText = document.getElementById('assetLabel').value || "App";
+            document.getElementById('live-svg-target').innerHTML = buildSvgMarkup(currentItem, 64, 64, false);
+        }
+
         function evalSmartButtonState() {
             const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
             document.getElementById('global-counter').innerText = db.length;
@@ -387,15 +371,15 @@
             lucide.createIcons();
         }
 
-        // SPUŠTĚNÍ CHYTRÉ AKCE DETEKCE STAŽENÍ
         function executeSmartAction() {
             const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
             if (db.length >= 2) downloadZipArchive(db);
             else downloadSingleAsset();
         }
 
-        // RENDER VYSOKÉHO ROZLIŠENÍ NA SKRYTÉ PLÁTNO (CANVAS EXPORT)
-        function drawAssetToCanvas(item, callback) {
+        // PŘEVÁDÍ SVG DO BEZCHYBNÉHO PNG VE VYSOKÉM ROZLIŠENÍ
+        function renderSvgToPngDataUrl(item, callback) {
+            const svgString = buildSvgMarkup(item, 1024, 1024, true);
             const canvas = document.getElementById('exportCanvas');
             const ctx = canvas.getContext('2d');
             
@@ -404,45 +388,19 @@
             canvas.width = w;
             canvas.height = h;
 
-            // Vyčištění a nakreslení zaobleného pozadí
-            ctx.fillStyle = item.bgColor;
-            const radius = 200;
-            ctx.beginPath();
-            ctx.roundRect(0, 0, w, h, radius);
-            ctx.fill();
+            const img = new Image();
+            const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(svgBlob);
 
-            // Styl pro ikonu
-            ctx.strokeStyle = item.iconColor;
-            ctx.lineWidth = 32;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            
-            ctx.save();
-            if (item.type === 'icon') {
-                ctx.translate(w/2 - 256, h/2 - 256);
-                ctx.scale(21.33, 21.33);
-            } else {
-                ctx.translate(w/2 - 180, h/2 - 240);
-                ctx.scale(15, 15);
-            }
-
-            const pathStr = canvasPathMap[item.icon] || canvasPathMap['heart'];
-            const p = new Path2D(pathStr);
-            ctx.stroke(p);
-            ctx.restore();
-
-            // Pokud jde o Widget s doplňkovým textem
-            if (item.type !== 'icon' && item.txt) {
-                ctx.fillStyle = item.iconColor;
-                ctx.font = "bold 75px sans-serif";
-                ctx.textAlign = "center";
-                ctx.fillText(item.txt.toUpperCase(), w / 2, h / 2 + 260);
-            }
-
-            callback(canvas.toDataURL('image/png'));
+            img.onload = function() {
+                ctx.clearRect(0, 0, w, h);
+                ctx.drawImage(img, 0, 0);
+                URL.revokeObjectURL(url);
+                callback(canvas.toDataURL('image/png'));
+            };
+            img.src = url;
         }
 
-        // STAŽENÍ JEDNÉ IKONY (.PNG)
         function downloadSingleAsset() {
             const currentItem = {
                 name: document.getElementById('assetLabel').value || 'app_icon',
@@ -453,7 +411,7 @@
                 txt: document.getElementById('elementText').value
             };
 
-            drawAssetToCanvas(currentItem, function(dataUrl) {
+            renderSvgToPngDataUrl(currentItem, function(dataUrl) {
                 const link = document.createElement('a');
                 link.download = `${currentItem.name.toLowerCase().replace(/\s+/g, '_')}.png`;
                 link.href = dataUrl;
@@ -461,7 +419,6 @@
             });
         }
 
-        // UKLÁDÁNÍ DO PAMĚTI (LOCAL STORAGE)
         function saveToRegistry() {
             const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
             const record = {
@@ -477,7 +434,6 @@
             db.unshift(record);
             localStorage.setItem('ios_studio_db', JSON.stringify(db));
             
-            // Animace úspěšného uložení na tlačítku
             const btn = document.getElementById('btn-save');
             const origText = btn.innerHTML;
             btn.innerHTML = `<i data-lucide="check-circle" class="w-2.5 h-2.5 text-emerald-400"></i> ${langPack[currentLang].savedOk}`;
@@ -487,7 +443,6 @@
             evalSmartButtonState();
         }
 
-        // VYRENDEROVÁNÍ KARET V ÚLOŽIŠTI
         function renderRegistryGrid() {
             const grid = document.getElementById('community-grid');
             const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
@@ -502,9 +457,13 @@
             db.forEach(item => {
                 const card = document.createElement('div');
                 card.className = "bg-slate-900/60 border border-white/5 rounded-xl p-2 flex flex-col items-center justify-between text-center shadow-lg";
+                
+                // Vygenerování miniaturního SVG náhledu pro kartu v úložišti
+                const miniSvg = buildSvgMarkup(item, 32, 32, false);
+
                 card.innerHTML = `
-                    <div class="w-7 h-7 rounded-lg flex items-center justify-center shadow-md" style="background-color: ${item.bgColor}">
-                        <i data-lucide="${item.icon}" class="w-4 h-4" style="color: ${item.iconColor}"></i>
+                    <div class="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center shadow-md">
+                        ${miniSvg}
                     </div>
                     <p class="font-bold text-[8px] text-slate-300 truncate w-full mt-2 px-1">${item.name}</p>
                     <div class="grid grid-cols-2 gap-1 w-full mt-2.5">
@@ -514,11 +473,9 @@
                 `;
                 grid.appendChild(card);
             });
-            lucide.createIcons();
             document.getElementById('global-counter').innerText = db.length;
         }
 
-        // NAČTENÍ IKONY Z ÚLOŽIŠTĚ ZPĚT DO EDITORU
         function loadAssetToEditor(id) {
             const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
             const item = db.find(x => x.id === id);
@@ -537,7 +494,6 @@
             switchTab('maker');
         }
 
-        // VYMAZÁNÍ JEDNÉ IKONY
         function deleteAsset(id) {
             let db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
             db = db.filter(x => x.id !== id);
@@ -545,7 +501,6 @@
             renderRegistryGrid();
         }
 
-        // KOMPLETNÍ PROMAZÁNÍ DATABÁZE
         function clearRegistryFully() {
             if(confirm(langPack[currentLang].confirmClear)) {
                 localStorage.setItem('ios_studio_db', JSON.stringify([]));
@@ -553,13 +508,12 @@
             }
         }
 
-        // KOMPRESE DO ZIP ARCHIVU (Pro hromadné stahování více ikon najednou)
         function downloadZipArchive(db) {
             const zip = new JSZip();
             let loadedCount = 0;
 
             db.forEach((item, index) => {
-                drawAssetToCanvas(item, function(dataUrl) {
+                renderSvgToPngDataUrl(item, function(dataUrl) {
                     const base64Data = dataUrl.split(',')[1];
                     const filename = `${item.name.toLowerCase().replace(/[^a-z0-9]/gi, '_')}_${index + 1}.png`;
                     zip.file(filename, base64Data, { base64: true });
