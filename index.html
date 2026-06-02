@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS Studio Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        html, body {
+            overflow-y: auto !important;
+            height: auto !important;
+            min-height: 100vh;
+            -webkit-overflow-scrolling: touch;
+        }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .ios-dock {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-[#030712] text-slate-100 font-sans antialiased text-xs">
+
+    <nav class="border-b border-white/5 bg-slate-950/70 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 py-1.5 flex justify-between items-center">
+            <div class="flex items-center gap-1.5">
+                <div class="w-5 h-5 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded flex items-center justify-center shadow-md">
+                    <i data-lucide="sparkles" class="text-white w-2.5 h-2.5"></i>
+                </div>
+                <div>
+                    <span class="font-bold text-[11px] block text-white leading-none">iOS Studio</span>
+                    <span class="text-[7px] text-slate-400 font-mono block">HD ENGINE</span>
+                </div>
+            </div>
+            <div class="flex bg-slate-900 p-0.5 rounded border border-white/5">
+                <button onclick="switchTab('maker')" id="btn-maker" class="px-2.5 py-0.5 rounded bg-blue-600 font-bold text-[9px] text-white cursor-pointer transition-all">Editor</button>
+                <button onclick="switchTab('community')" id="btn-community" class="px-2.5 py-0.5 rounded font-bold text-[9px] text-slate-400 hover:text-white cursor-pointer transition-all">Registry (<span id="global-counter">0</span>)</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-2 py-2">
+        
+        <div id="tab-maker" class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start">
+            
+            <div class="lg:col-span-4 glass-panel rounded-lg p-3 space-y-3 shadow-xl">
+                <div class="flex justify-between items-center border-b border-white/5 pb-1">
+                    <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Matrix Config</h2>
+                </div>
+
+                <div>
+                    <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1">Asset Type</label>
+                    <div class="grid grid-cols-3 gap-1">
+                        <button onclick="setAssetType('icon')" id="type-icon" class="py-1 rounded border border-blue-500 bg-blue-500/10 text-[9px] font-bold flex items-center justify-center gap-1 text-white cursor-pointer">
+                            <i data-lucide="app-window" class="w-2.5 h-2.5 text-blue-400"></i> Icon
+                        </button>
+                        <button onclick="setAssetType('widget-s')" id="type-widget-s" class="py-1 rounded border border-white/10 bg-slate-950/40 text-[9px] font-bold flex items-center justify-center gap-1 text-slate-400 hover:text-white cursor-pointer">
+                            <i data-lucide="square" class="w-2.5 h-2.5"></i> Small
+                        </button>
+                        <button onclick="setAssetType('widget-m')" id="type-widget-m" class="py-1 rounded border border-white/10 bg-slate-950/40 text-[9px] font-bold flex items-center justify-center gap-1 text-slate-400 hover:text-white cursor-pointer">
+                            <i data-lucide="layout-grid" class="w-2.5 h-2.5"></i> Medium
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1">Background Color</label>
+                    <div class="flex gap-1 items-center">
+                        <input type="color" id="bgColor" value="#0f172a" oninput="updatePreview()" class="w-7 h-6 rounded border border-white/20 bg-transparent cursor-pointer p-0">
+                        <input type="text" id="bgColorText" value="#0f172a" readonly class="w-full h-6 bg-slate-950 border border-white/10 rounded px-1.5 text-[9px] font-mono text-slate-400">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-1.5">
+                    <div>
+                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1">Glyph Tint</label>
+                        <input type="color" id="iconColor" value="#38bdf8" oninput="updatePreview()" class="w-full h-6 rounded border border-white/20 bg-transparent cursor-pointer p-0">
+                    </div>
+                    <div>
+                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1">Preset Icon</label>
+                        <select id="iconSelect" onchange="updatePresetConfig(); updatePreview();" class="w-full h-6 bg-slate-950 border border-white/10 rounded px-1 text-[9px] font-bold text-slate-200 focus:outline-none">
+                            <option value="heart">Health</option>
+                            <option value="music">Music</option>
+                            <option value="cloud-sun">Weather</option>
+                            <option value="message-square">Messages</option>
+                            <option value="camera">Camera</option>
+                            <option value="compass">Safari</option>
+                            <option value="terminal">Terminal</option>
+                            <option value="cpu">Processor</option>
+                            <option value="wallet">Wallet</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-1.5">
+                    <div>
+                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1">Widget Value</label>
+                        <input type="text" id="elementText" placeholder="e.g. 24°C" oninput="updatePreview()" class="w-full h-6 bg-slate-950 border border-white/10 rounded px-1 text-[9px] text-slate-200 placeholder:text-slate-700">
+                    </div>
+                    <div>
+                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1">Asset Label</label>
+                        <input type="text" id="assetLabel" value="Health" oninput="updatePreview()" class="w-full h-6 bg-slate-950 border border-white/10 rounded px-1 text-[9px] text-slate-200">
+                    </div>
+                </div>
+
+                <div class="h-[1px] bg-white/5"></div>
+
+                <div class="space-y-1">
+                    <button onclick="saveToRegistry()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-1 rounded text-[9px] transition-all flex items-center justify-center gap-1 cursor-pointer">
+                        <i data-lucide="plus" class="w-2.5 h-2.5"></i> Add to Registry List
+                    </button>
+                    
+                    <button id="smart-action-btn" onclick="executeSmartAction()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-1.5 rounded text-[10px] transition-all flex items-center justify-center gap-1 shadow-md cursor-pointer">
+                        <i id="smart-btn-icon" data-lucide="download" class="w-3 h-3"></i> <span id="smart-btn-text">Download (.PNG)</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="lg:col-span-8 flex flex-col items-center justify-center p-2">
+                <div class="w-[240px] h-[460px] rounded-[32px] p-2 relative shadow-2xl border-[5px] border-slate-900 bg-slate-950 overflow-hidden select-none ring-1 ring-white/5">
+                    <div class="absolute inset-0 z-0 bg-cover bg-center scale-105" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop');"></div>
+                    
+                    <div class="w-16 h-3.5 bg-black rounded-full mx-auto mb-2 relative z-30"></div>
+
+                    <div class="grid grid-cols-4 gap-1.5 p-1 relative z-10" id="ios-grid">
+                        <div class="flex flex-col items-center opacity-30"><div class="w-8 h-8 bg-black/40 rounded-md flex items-center justify-center"><i data-lucide="phone" class="w-3 h-3 text-emerald-400"></i></div></div>
+                        <div class="flex flex-col items-center opacity-30"><div class="w-8 h-8 bg-black/40 rounded-md flex items-center justify-center"><i data-lucide="mail" class="w-3 h-3 text-blue-400"></i></div></div>
+
+                        <div id="preview-container" class="col-span-1 row-span-1 flex flex-col items-center justify-start">
+                            <div id="ios-element" class="w-8 h-8 rounded-md shadow-lg flex flex-col items-center justify-center relative overflow-hidden border border-white/10">
+                                <div id="element-content" class="relative z-10 flex flex-col items-center justify-center p-0.5 text-center h-full w-full">
+                                    <i id="preview-icon" data-lucide="heart" class="w-3.5 h-3.5"></i>
+                                    <span id="preview-text" class="text-[5px] font-bold tracking-tight hidden uppercase max-w-full truncate"></span>
+                                </div>
+                            </div>
+                            <span id="element-label" class="text-[6px] text-white/95 font-medium mt-0.5 truncate max-w-[35px] drop-shadow">Health</span>
+                        </div>
+
+                        <div class="flex flex-col items-center opacity-30"><div class="w-8 h-8 bg-black/40 rounded-md flex items-center justify-center"><i data-lucide="settings" class="w-3 h-3 text-slate-400"></i></div></div>
+                    </div>
+
+                    <div class="absolute bottom-2 left-2 right-2 h-9 ios-dock rounded-[14px] flex items-center justify-around px-2 shadow-xl">
+                        <div class="w-6 h-6 bg-white rounded-md flex items-center justify-center"><i data-lucide="message-circle" class="w-3 h-3 text-emerald-500"></i></div>
+                        <div class="w-6 h-6 bg-slate-900 rounded-md flex items-center justify-center"><i data-lucide="compass" class="w-3 h-3 text-blue-400"></i></div>
+                        <div class="w-6 h-6 bg-gradient-to-b from-amber-400 to-orange-500 rounded-md flex items-center justify-center"><i data-lucide="music" class="w-3 h-3 text-white"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-community" class="hidden space-y-3">
+            <div class="flex justify-between items-center bg-slate-900/60 p-2 border border-white/5 rounded-lg">
+                <div>
+                    <h2 class="text-[10px] font-bold text-white uppercase tracking-wider">Queue Pack Registry</h2>
+                </div>
+                <button onclick="clearRegistryFully()" class="bg-rose-950/40 hover:bg-rose-900/40 border border-rose-500/20 text-rose-400 py-0.5 px-1.5 rounded text-[8px] transition-all cursor-pointer">
+                    Purge All
+                </button>
+            </div>
+
+            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2" id="community-grid"></div>
+        </div>
+
+        <div id="hd-renderer" style="position: absolute; top: -9999px; left: -9999px; width: 2048px; height: 2048px; overflow: hidden; pointer-events: none;"></div>
+
+    </main>
+
+    <script>
+        let currentAssetType = 'icon';
+        const presetLabels = { 'heart': 'Health', 'music': 'Music', 'cloud-sun': 'Weather', 'message-square': 'Messages', 'camera': 'Camera', 'compass': 'Safari', 'terminal': 'Terminal', 'cpu': 'Processor', 'wallet': 'Wallet' };
+        const presetTexts = { 'cloud-sun': '19°C', 'heart': '72 BPM', 'cpu': 'Core On' };
+
+        if (!localStorage.getItem('ios_studio_db')) {
+            localStorage.setItem('ios_studio_db', JSON.stringify([]));
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            lucide.createIcons();
+            updatePresetConfig();
+            updatePreview();
+            evalSmartButtonState();
+        });
+
+        function updatePresetConfig() {
+            const currentGlyph = document.getElementById('iconSelect').value;
+            document.getElementById('assetLabel').value = presetLabels[currentGlyph] || 'App';
+            document.getElementById('elementText').value = (currentAssetType !== 'icon') ? (presetTexts[currentGlyph] || "Active") : "";
+        }
+
+        function switchTab(target) {
+            const tabMaker = document.getElementById('tab-maker');
+            const tabCommunity = document.getElementById('tab-community');
+            const btnMaker = document.getElementById('btn-maker');
+            const btnCommunity = document.getElementById('btn-community');
+
+            if (target === 'maker') {
+                tabMaker.classList.remove('hidden');
+                tabCommunity.classList.add('hidden');
+                btnMaker.className = "px-2.5 py-0.5 rounded bg-blue-600 font-bold text-[9px] text-white cursor-pointer";
+                btnCommunity.className = "px-2.5 py-0.5 rounded font-bold text-[9px] text-slate-400 hover:text-white cursor-pointer";
+                evalSmartButtonState();
+            } else {
+                tabMaker.classList.add('hidden');
+                tabCommunity.classList.remove('hidden');
+                btnMaker.className = "px-2.5 py-0.5 rounded font-bold text-[9px] text-slate-400 hover:text-white cursor-pointer";
+                btnCommunity.className = "px-2.5 py-0.5 rounded bg-blue-600 font-bold text-[9px] text-white cursor-pointer";
+                renderRegistryGrid();
+            }
+        }
+
+        function setAssetType(type) {
+            currentAssetType = type;
+            ['icon', 'widget-s', 'widget-m'].forEach(t => {
+                document.getElementById(`type-${t}`).className = "py-1 rounded border border-white/10 bg-slate-950/40 text-[9px] font-bold flex items-center justify-center gap-1 text-slate-400 hover:text-white cursor-pointer";
+            });
+            document.getElementById(`type-${type}`).className = "py-1 rounded border border-blue-500 bg-blue-500/10 text-[9px] font-bold flex items-center justify-center gap-1 text-white cursor-pointer";
+
+            const container = document.getElementById('preview-container');
+            const element = document.getElementById('ios-element');
+            const label = document.getElementById('element-label');
+
+            if (type === 'icon') {
+                container.className = "col-span-1 row-span-1 flex flex-col items-center justify-start";
+                element.className = "w-8 h-8 rounded-md shadow-lg flex flex-col items-center justify-center relative overflow-hidden border border-white/10";
+                label.classList.remove('hidden');
+            } else if (type === 'widget-s') {
+                container.className = "col-span-2 row-span-2 flex flex-col items-center justify-start";
+                element.className = "w-[72px] h-[72px] rounded-[14px] shadow-lg flex flex-col items-center justify-center relative overflow-hidden border border-white/10";
+                label.classList.add('hidden');
+            } else if (type === 'widget-m') {
+                container.className = "col-span-4 row-span-2 flex flex-col items-center justify-start";
+                element.className = "w-[152px] h-[72px] rounded-[14px] shadow-lg flex flex-col items-center justify-center relative overflow-hidden border border-white/10";
+                label.classList.add('hidden');
+            }
+            updatePresetConfig();
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const bgColor = document.getElementById('bgColor').value;
+            const iconColor = document.getElementById('iconColor').value;
+            const iconSelect = document.getElementById('iconSelect').value;
+            const customText = document.getElementById('elementText').value;
+
+            document.getElementById('bgColorText').value = bgColor;
+            document.getElementById('element-label').innerText = document.getElementById('assetLabel').value || "App";
+
+            const previewIcon = document.getElementById('preview-icon');
+            const previewText = document.getElementById('preview-text');
+
+            document.getElementById('ios-element').style.backgroundColor = bgColor;
+            previewIcon.style.color = iconColor;
+            previewIcon.setAttribute('data-lucide', iconSelect);
+            
+            if (currentAssetType === 'icon') {
+                previewIcon.className = "w-3.5 h-3.5";
+                previewText.classList.add('hidden');
+            } else {
+                previewIcon.className = "w-5 h-5 text-center";
+                if (customText.trim() !== "") {
+                    previewText.innerText = customText;
+                    previewText.style.color = `${iconColor}c0`;
+                    previewText.classList.remove('hidden');
+                } else {
+                    previewText.classList.add('hidden');
+                }
+            }
+            lucide.createIcons();
+        }
+
+        // EVALUACE AUTOMATICKÉHO PŘEPÍNÁNÍ (.PNG vs .ZIP)
+        function evalSmartButtonState() {
+            const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
+            const count = db.length;
+            
+            document.getElementById('global-counter').innerText = count;
+            
+            const btn = document.getElementById('smart-action-btn');
+            const iconNode = document.getElementById('smart-btn-icon');
+            const textNode = document.getElementById('smart-btn-text');
+
+            if (count >= 2) {
+                btn.className = "w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-1.5 rounded text-[10px] transition-all flex items-center justify-center gap-1 shadow-md cursor-pointer";
+                iconNode.setAttribute('data-lucide', 'archive');
+                textNode.innerText = `Export Pack (${count} items) -> .ZIP`;
+            } else {
+                btn.className = "w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-1.5 rounded text-[10px] transition-all flex items-center justify-center gap-1 shadow-md cursor-pointer";
+                iconNode.setAttribute('data-lucide', 'download');
+                textNode.innerText = "Download Editor View (.PNG)";
+            }
+            lucide.createIcons();
+        }
+
+        function executeSmartAction() {
+            const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
+            if (db.length >= 2) {
+                compileAndDownloadZip();
+            } else {
+                downloadAssetDirectly();
+            }
+        }
+
+        // VNITŘNÍ GENERÁTOR PRO VYSOKÉ ROZLIŠENÍ (HD / SKUTEČNÁ VELIKOST V kB)
+        function generateHDDOMNode(item) {
+            const wrapper = document.createElement('div');
+            wrapper.style.display = 'flex';
+            wrapper.style.flexDirection = 'column';
+            wrapper.style.alignItems = 'center';
+            wrapper.style.justifyContent = 'center';
+            wrapper.style.backgroundColor = item.bgColor;
+            wrapper.style.position = 'relative';
+            wrapper.style.boxSizing = 'border-box';
+
+            // Skutečné hardwarové rozměry pro iOS (Vysoká hustota v kB)
+            if (item.type === 'icon') {
+                wrapper.style.width = '1024px';
+                wrapper.style.height = '1024px';
+                wrapper.style.borderRadius = '220px';
+            } else if (item.type === 'widget-s') {
+                wrapper.style.width = '1024px';
+                wrapper.style.height = '1024px';
+                wrapper.style.borderRadius = '190px';
+            } else if (item.type === 'widget-m') {
+                wrapper.style.width = '2112px';
+                wrapper.style.height = '1024px';
+                wrapper.style.borderRadius = '190px';
+            }
+
+            const icon = document.createElement('i');
+            icon.setAttribute('data-lucide', item.icon);
+            icon.style.color = item.iconColor;
+            
+            if (item.type === 'icon') {
+                icon.style.width = '512px';
+                icon.style.height = '512px';
+            } else {
+                icon.style.width = '380px';
+                icon.style.height = '380px';
+            }
+
+            wrapper.appendChild(icon);
+
+            if (item.type !== 'icon' && item.txt) {
+                const text = document.createElement('span');
+                text.style.fontFamily = 'sans-serif';
+                text.style.fontWeight = 'bold';
+                text.style.marginTop = '40px';
+                text.style.fontSize = '90px';
+                text.style.color = `${item.iconColor}d0`;
+                text.style.textTransform = 'uppercase';
+                wrapper.appendChild(text);
+                text.innerText = item.txt;
+            }
+
+            return wrapper;
+        }
+
+        function downloadAssetDirectly() {
+            const currentItem = {
+                name: document.getElementById('assetLabel').value || 'ios-asset',
+                type: currentAssetType,
+                bgColor: document.getElementById('bgColor').value,
+                iconColor: document.getElementById('iconColor').value,
+                icon: document.getElementById('iconSelect').value,
+                txt: document.getElementById('elementText').value
+            };
+
+            const hdNode = generateHDDOMNode(currentItem);
+            const renderer = document.getElementById('hd-renderer');
+            renderer.innerHTML = "";
+            renderer.appendChild(hdNode);
+            lucide.createIcons({attrs: {"stroke-width": 1.5}});
+
+            setTimeout(() => {
+                html2canvas(hdNode, { backgroundColor: null, scale: 1, logging: false }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `${currentItem.name.toLowerCase().replace(/\s+/g, '_')}.png`;
+                    link.href = canvas.toDataURL('image/png', 1.0);
+                    link.click();
+                    renderer.innerHTML = "";
+                });
+            }, 50);
+        }
+
+        function saveToRegistry() {
+            const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
+            const record = {
+                id: Date.now(),
+                name: document.getElementById('assetLabel').value || 'Asset Spec',
+                type: currentAssetType,
+                bgColor: document.getElementById('bgColor').value,
+                iconColor: document.getElementById('iconColor').value,
+                icon: document.getElementById('iconSelect').value,
+                txt: (currentAssetType !== 'icon') ? document.getElementById('elementText').value : ""
+            };
+
+            db.unshift(record);
+            localStorage.setItem('ios_studio_db', JSON.stringify(db));
+            evalSmartButtonState();
+            switchTab('community');
+        }
+
+        function renderRegistryGrid() {
+            const grid = document.getElementById('community-grid');
+            const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
+            grid.innerHTML = ""; 
+
+            if (db.length === 0) {
+                grid.innerHTML = `<div class="col-span-full py-4 text-center text-slate-600 text-[9px] font-mono uppercase tracking-wider">Registry empty.</div>`;
+                return;
+            }
+
+            db.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900/40 border border-white/5 rounded-md p-1.5 flex flex-col items-center justify-between text-center shadow-sm";
+                
+                let previewBox = "";
+                if (item.type === 'widget-m') {
+                    previewBox = `<div class="w-10 h-5 rounded flex flex-col items-center justify-center p-0.5" style="background-color: ${item.bgColor}"><i data-lucide="${item.icon}" class="w-2 h-2" style="color: ${item.iconColor}"></i></div>`;
+                } else {
+                    previewBox = `<div class="w-5 h-5 rounded flex flex-col items-center justify-center p-0.5" style="background-color: ${item.bgColor}"><i data-lucide="${item.icon}" class="w-2.5 h-2.5" style="color: ${item.iconColor}"></i></div>`;
+                }
+
+                card.innerHTML = `
+                    <div class="h-6 flex items-center justify-center">${previewBox}</div>
+                    <div class="w-full mt-1">
+                        <p class="font-bold text-[8px] text-slate-400 truncate tracking-tight">${item.name}</p>
+                        <div class="grid grid-cols-2 gap-0.5 mt-1">
+                            <button onclick="mountAsset(${item.id})" class="py-0.5 bg-slate-950 hover:bg-blue-600 rounded text-[7px] text-slate-300 transition-all cursor-pointer">Edit</button>
+                            <button onclick="purgeAsset(${item.id})" class="py-0.5 bg-slate-950 hover:bg-rose-950 text-rose-400 rounded text-[7px] transition-all cursor-pointer">Drop</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+            evalSmartButtonState();
+        }
+
+        function mountAsset(id) {
+            const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
+            const element = db.find(item => item.id === id);
+            if (!element) return;
+
+            document.getElementById('assetLabel').value = element.name;
+            setAssetType(element.type);
+            document.getElementById('bgColor').value = element.bgColor;
+            document.getElementById('iconColor').value = element.iconColor;
+            document.getElementById('iconSelect').value = element.icon;
+            document.getElementById('elementText').value = element.txt;
+
+            updatePreview();
+            switchTab('maker');
+        }
+
+        function purgeAsset(id) {
+            let db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
+            db = db.filter(item => item.id !== id);
+            localStorage.setItem('ios_studio_db', JSON.stringify(db));
+            renderRegistryGrid();
+        }
+
+        function clearRegistryFully() {
+            localStorage.setItem('ios_studio_db', JSON.stringify([]));
+            renderRegistryGrid();
+        }
+
+        // BATCH HD ZIP ASYNC COMPILER (Zaručuje velkou velikost kB a ostrý tisk)
+        function compileAndDownloadZip() {
+            const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
+            if (db.length === 0) return;
+
+            const zip = new JSZip();
+            const renderer = document.getElementById('hd-renderer');
+            renderer.innerHTML = ""; 
+
+            let renderingQueue = Promise.resolve();
+
+            db.forEach((item, index) => {
+                renderingQueue = renderingQueue.then(() => {
+                    return new Promise((resolve) => {
+                        const hdNode = generateHDDOMNode(item);
+                        renderer.appendChild(hdNode);
+                        
+                        // Inicializace velkých SVG ikon s tlustší čárou pro HD
+                        lucide.createIcons({attrs: {"stroke-width": 1.5}});
+
+                        setTimeout(() => {
+                            html2canvas(hdNode, { backgroundColor: null, scale: 1, logging: false }).then(canvas => {
+                                const base64Data = canvas.toDataURL('image/png', 1.0).split(',')[1];
+                                const safeName = item.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+                                const fileName = `${safeName}_hd_${index + 1}.png`;
+                                
+                                zip.file(fileName, base64Data, { base64: true });
+                                hdNode.remove(); 
+                                resolve();
+                            });
+                        }, 60); 
+                    });
+                });
+            });
+
+            renderingQueue.then(() => {
+                zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: { level: 9 } }).then(function(content) {
+                    const link = document.createElement('a');
+                    link.download = `ios_hd_pack_${Date.now()}.zip`;
+                    link.href = URL.createObjectURL(content);
+                    link.click();
+                    renderer.innerHTML = ""; 
+                });
+            });
+        }
+    </script>
+</body>
+</html>
