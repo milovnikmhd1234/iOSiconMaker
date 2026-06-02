@@ -1,229 +1,230 @@
 <!DOCTYPE html>
-<html lang="en-GB">
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iOS Studio Pro</title>
+    <title>iOS Studio Pro - Real Fix</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
-        html, body {
-            overflow-y: auto !important;
-            height: auto !important;
-            min-height: 100vh;
-            -webkit-overflow-scrolling: touch;
-        }
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .ios-dock {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
+        html, body { overflow-y: auto !important; height: auto !important; min-height: 100vh; }
+        .glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .ios-dock { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.2); }
     </style>
 </head>
-<body class="bg-[#030712] text-slate-100 font-sans antialiased text-xs">
+<body class="bg-[#030712] text-slate-100 font-sans antialiased text-[10px]">
 
-    <nav class="border-b border-white/5 bg-slate-950/70 sticky top-0 z-50 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-4 py-1.5 flex justify-between items-center">
-            <div class="flex items-center gap-1.5">
-                <div class="w-5 h-5 bg-gradient-to-tr from-blue-600 to-indigo-500 rounded flex items-center justify-center shadow-md">
+    <nav class="border-b border-white/5 bg-slate-950/80 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-3 py-1 flex justify-between items-center">
+            <div class="flex items-center gap-1">
+                <div class="w-4 h-4 bg-blue-600 rounded flex items-center justify-center animate-pulse">
                     <i data-lucide="sparkles" class="text-white w-2.5 h-2.5"></i>
                 </div>
                 <div>
-                    <span class="font-bold text-[11px] block text-white leading-none">iOS Studio</span>
-                    <span class="text-[7px] text-slate-400 font-mono block">HD ENGINE</span>
+                    <span class="font-bold text-[10px] block text-white">iOS Studio v2</span>
+                    <span class="text-[6px] text-emerald-400 font-mono block tracking-widest">LIVE APPS & DIRECT DOWNLOAD</span>
                 </div>
             </div>
             <div class="flex bg-slate-900 p-0.5 rounded border border-white/5">
-                <button onclick="switchTab('maker')" id="btn-maker" class="px-2.5 py-0.5 rounded bg-blue-600 font-bold text-[9px] text-white cursor-pointer transition-all">Editor</button>
-                <button onclick="switchTab('community')" id="btn-community" class="px-2.5 py-0.5 rounded font-bold text-[9px] text-slate-400 hover:text-white cursor-pointer transition-all">Registry (<span id="global-counter">0</span>)</button>
+                <button onclick="switchTab('maker')" id="btn-maker" class="px-2 py-0.5 rounded bg-blue-600 font-bold text-[8px] text-white cursor-pointer">Editor</button>
+                <button onclick="switchTab('community')" id="btn-community" class="px-2 py-0.5 rounded font-bold text-[8px] text-slate-400 hover:text-white cursor-pointer">Moje Úložiště (<span id="global-counter">0</span>)</button>
             </div>
         </div>
     </nav>
 
     <main class="max-w-7xl mx-auto px-2 py-2">
         
-        <div id="tab-maker" class="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start">
+        <div id="tab-maker" class="grid grid-cols-1 lg:grid-cols-12 gap-2 items-start">
             
-            <div class="lg:col-span-4 glass-panel rounded-lg p-3 space-y-3 shadow-xl">
-                <div class="flex justify-between items-center border-b border-white/5 pb-1">
-                    <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Matrix Config</h2>
-                </div>
-
-                <div>
-                    <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1">Asset Type</label>
-                    <div class="grid grid-cols-3 gap-1">
-                        <button onclick="setAssetType('icon')" id="type-icon" class="py-1 rounded border border-blue-500 bg-blue-500/10 text-[9px] font-bold flex items-center justify-center gap-1 text-white cursor-pointer">
-                            <i data-lucide="app-window" class="w-2.5 h-2.5 text-blue-400"></i> Icon
-                        </button>
-                        <button onclick="setAssetType('widget-s')" id="type-widget-s" class="py-1 rounded border border-white/10 bg-slate-950/40 text-[9px] font-bold flex items-center justify-center gap-1 text-slate-400 hover:text-white cursor-pointer">
-                            <i data-lucide="square" class="w-2.5 h-2.5"></i> Small
-                        </button>
-                        <button onclick="setAssetType('widget-m')" id="type-widget-m" class="py-1 rounded border border-white/10 bg-slate-950/40 text-[9px] font-bold flex items-center justify-center gap-1 text-slate-400 hover:text-white cursor-pointer">
-                            <i data-lucide="layout-grid" class="w-2.5 h-2.5"></i> Medium
-                        </button>
+            <div class="lg:col-span-4 glass-panel rounded-lg p-2 space-y-2.5 shadow-xl">
+                
+                <div class="bg-gradient-to-r from-blue-950/40 to-slate-900/60 p-1.5 rounded border border-blue-500/30">
+                    <label class="block text-[7px] font-bold uppercase tracking-widest text-blue-400 mb-0.5">App Store Synchronizace</label>
+                    <div class="flex gap-1">
+                        <input type="text" id="appSearchInput" placeholder="Zadej Instagram, Spotify, TikTok, Pinterest..." class="w-full h-5 bg-slate-900 border border-white/10 rounded px-1 text-[9px] text-slate-200 placeholder:text-slate-600 focus:outline-none focus:border-blue-500">
+                        <button onclick="searchAppStore()" class="bg-blue-600 hover:bg-blue-500 text-white px-2 rounded font-bold text-[8px] cursor-pointer shrink-0">Hledat</button>
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1">Background Color</label>
-                    <div class="flex gap-1 items-center">
-                        <input type="color" id="bgColor" value="#0f172a" oninput="updatePreview()" class="w-7 h-6 rounded border border-white/20 bg-transparent cursor-pointer p-0">
-                        <input type="text" id="bgColorText" value="#0f172a" readonly class="w-full h-6 bg-slate-950 border border-white/10 rounded px-1.5 text-[9px] font-mono text-slate-400">
+                    <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Formát Prvku</label>
+                    <div class="grid grid-cols-3 gap-0.5">
+                        <button onclick="setAssetType('icon')" id="type-icon" class="py-0.5 rounded border border-blue-500 bg-blue-500/10 text-[8px] font-bold text-white cursor-pointer">App Ikona</button>
+                        <button onclick="setAssetType('widget-s')" id="type-widget-s" class="py-0.5 rounded border border-white/10 bg-slate-950/40 text-[8px] font-bold text-slate-400 hover:text-white cursor-pointer">Malý Widget</button>
+                        <button onclick="setAssetType('widget-m')" id="type-widget-m" class="py-0.5 rounded border border-white/10 bg-slate-950/40 text-[8px] font-bold text-slate-400 hover:text-white cursor-pointer">Střední Widget</button>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-1.5">
+                <div class="grid grid-cols-2 gap-1">
                     <div>
-                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1">Glyph Tint</label>
-                        <input type="color" id="iconColor" value="#38bdf8" oninput="updatePreview()" class="w-full h-6 rounded border border-white/20 bg-transparent cursor-pointer p-0">
+                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Barva Pozadí</label>
+                        <input type="color" id="bgColor" value="#1e1e2e" oninput="updatePreview()" class="w-full h-5 rounded border border-white/20 bg-transparent cursor-pointer p-0">
                     </div>
                     <div>
-                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1">Preset Icon</label>
-                        <select id="iconSelect" onchange="updatePresetConfig(); updatePreview();" class="w-full h-6 bg-slate-950 border border-white/10 rounded px-1 text-[9px] font-bold text-slate-200 focus:outline-none">
-                            <option value="heart">Health</option>
-                            <option value="music">Music</option>
-                            <option value="cloud-sun">Weather</option>
-                            <option value="message-square">Messages</option>
-                            <option value="camera">Camera</option>
-                            <option value="compass">Safari</option>
-                            <option value="terminal">Terminal</option>
-                            <option value="cpu">Processor</option>
-                            <option value="wallet">Wallet</option>
+                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Barva Symbolu</label>
+                        <input type="color" id="iconColor" value="#cdd6f4" oninput="updatePreview()" class="w-full h-5 rounded border border-white/20 bg-transparent cursor-pointer p-0">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-1">
+                    <div>
+                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Ikona / Symbol</label>
+                        <select id="iconSelect" onchange="updatePreview()" class="w-full h-5 bg-slate-950 border border-white/10 rounded px-0.5 text-[8px] font-bold text-slate-200">
+                            <option value="heart">Zdraví / Srdce</option>
+                            <option value="music">Hudba / Přehrávač</option>
+                            <option value="camera">Instagram / Fotoaparát</option>
+                            <option value="message-square">Zprávy / Chat</option>
+                            <option value="compass">Safari / Prohlížeč</option>
+                            <option value="wallet">Peněženka / Karty</option>
+                            <option value="cloud-sun">Počasí / Meteoradar</option>
+                            <option value="terminal">Kód / Vývojář</option>
+                            <option value="bell">Notifikace / Zvonění</option>
+                            <option value="layers">Aplikace / Knihovna</option>
                         </select>
                     </div>
+                    <div>
+                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Název na ploše</label>
+                        <input type="text" id="assetLabel" value="App" oninput="updatePreview()" class="w-full h-5 bg-slate-950 border border-white/10 rounded px-1 text-[8px] text-slate-200">
+                    </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-1.5">
-                    <div>
-                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1">Widget Value</label>
-                        <input type="text" id="elementText" placeholder="e.g. 24°C" oninput="updatePreview()" class="w-full h-6 bg-slate-950 border border-white/10 rounded px-1 text-[9px] text-slate-200 placeholder:text-slate-700">
-                    </div>
-                    <div>
-                        <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-1">Asset Label</label>
-                        <input type="text" id="assetLabel" value="Health" oninput="updatePreview()" class="w-full h-6 bg-slate-950 border border-white/10 rounded px-1 text-[9px] text-slate-200">
-                    </div>
+                <div>
+                    <label class="block text-[7px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Text ve Widgetu (např. hodnota)</label>
+                    <input type="text" id="elementText" placeholder="Např. 21°C nebo 12,5k" oninput="updatePreview()" class="w-full h-5 bg-slate-950 border border-white/10 rounded px-1 text-[8px] text-slate-200">
                 </div>
 
                 <div class="h-[1px] bg-white/5"></div>
 
                 <div class="space-y-1">
-                    <button onclick="saveToRegistry()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-1 rounded text-[9px] transition-all flex items-center justify-center gap-1 cursor-pointer">
-                        <i data-lucide="plus" class="w-2.5 h-2.5"></i> Add to Registry List
+                    <button id="btn-save" onclick="saveToRegistry()" class="w-full bg-slate-800 hover:bg-slate-700 border border-white/10 text-white font-bold py-1 rounded text-[8px] flex items-center justify-center gap-1 transition-all cursor-pointer">
+                        <i data-lucide="save" class="w-2.5 h-2.5"></i> Uložit do paměti webu
                     </button>
                     
-                    <button id="smart-action-btn" onclick="executeSmartAction()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-1.5 rounded text-[10px] transition-all flex items-center justify-center gap-1 shadow-md cursor-pointer">
-                        <i id="smart-btn-icon" data-lucide="download" class="w-3 h-3"></i> <span id="smart-btn-text">Download (.PNG)</span>
+                    <button id="smart-action-btn" onclick="executeSmartAction()" class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-1.5 rounded text-[9px] flex items-center justify-center gap-1 shadow-md transition-all cursor-pointer">
+                        <i id="smart-btn-icon" data-lucide="download" class="w-3 h-3"></i> <span id="smart-btn-text">Stáhnout jako .PNG</span>
                     </button>
                 </div>
             </div>
 
-            <div class="lg:col-span-8 flex flex-col items-center justify-center p-2">
-                <div class="w-[240px] h-[460px] rounded-[32px] p-2 relative shadow-2xl border-[5px] border-slate-900 bg-slate-950 overflow-hidden select-none ring-1 ring-white/5">
-                    <div class="absolute inset-0 z-0 bg-cover bg-center scale-105" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1964&auto=format&fit=crop');"></div>
+            <div class="lg:col-span-8 flex flex-col items-center justify-center p-1">
+                <div class="w-[210px] h-[400px] rounded-[32px] p-2 relative shadow-2xl border-[4px] border-slate-900 bg-slate-950 overflow-hidden select-none">
+                    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600&auto=format&fit=crop');"></div>
                     
-                    <div class="w-16 h-3.5 bg-black rounded-full mx-auto mb-2 relative z-30"></div>
+                    <div class="w-14 h-3 bg-black rounded-full mx-auto mb-3 relative z-30"></div>
 
-                    <div class="grid grid-cols-4 gap-1.5 p-1 relative z-10" id="ios-grid">
-                        <div class="flex flex-col items-center opacity-30"><div class="w-8 h-8 bg-black/40 rounded-md flex items-center justify-center"><i data-lucide="phone" class="w-3 h-3 text-emerald-400"></i></div></div>
-                        <div class="flex flex-col items-center opacity-30"><div class="w-8 h-8 bg-black/40 rounded-md flex items-center justify-center"><i data-lucide="mail" class="w-3 h-3 text-blue-400"></i></div></div>
+                    <div class="grid grid-cols-4 gap-2 p-1 relative z-10" id="ios-grid">
+                        <div class="flex flex-col items-center opacity-20"><div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center"><i data-lucide="phone" class="w-3 h-3 text-emerald-400"></i></div></div>
+                        <div class="flex flex-col items-center opacity-20"><div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center"><i data-lucide="mail" class="w-3 h-3 text-blue-400"></i></div></div>
 
                         <div id="preview-container" class="col-span-1 row-span-1 flex flex-col items-center justify-start">
-                            <div id="ios-element" class="w-8 h-8 rounded-md shadow-lg flex flex-col items-center justify-center relative overflow-hidden border border-white/10">
-                                <div id="element-content" class="relative z-10 flex flex-col items-center justify-center p-0.5 text-center h-full w-full">
-                                    <i id="preview-icon" data-lucide="heart" class="w-3.5 h-3.5"></i>
-                                    <span id="preview-text" class="text-[5px] font-bold tracking-tight hidden uppercase max-w-full truncate"></span>
+                            <div id="ios-element" class="w-8 h-8 rounded-lg shadow-lg flex flex-col items-center justify-center relative overflow-hidden transition-all">
+                                <div class="relative z-10 flex flex-col items-center justify-center w-full h-full p-0.5">
+                                    <i id="preview-icon" data-lucide="heart" class="w-4 h-4"></i>
+                                    <span id="preview-text" class="text-[4px] font-bold mt-0.5 hidden max-w-full truncate"></span>
                                 </div>
                             </div>
-                            <span id="element-label" class="text-[6px] text-white/95 font-medium mt-0.5 truncate max-w-[35px] drop-shadow">Health</span>
+                            <span id="element-label" class="text-[6px] text-white/90 font-medium mt-0.5 truncate max-w-[32px] drop-shadow-md">App</span>
                         </div>
 
-                        <div class="flex flex-col items-center opacity-30"><div class="w-8 h-8 bg-black/40 rounded-md flex items-center justify-center"><i data-lucide="settings" class="w-3 h-3 text-slate-400"></i></div></div>
+                        <div class="flex flex-col items-center opacity-20"><div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center"><i data-lucide="settings" class="w-3 h-3 text-slate-400"></i></div></div>
                     </div>
 
-                    <div class="absolute bottom-2 left-2 right-2 h-9 ios-dock rounded-[14px] flex items-center justify-around px-2 shadow-xl">
-                        <div class="w-6 h-6 bg-white rounded-md flex items-center justify-center"><i data-lucide="message-circle" class="w-3 h-3 text-emerald-500"></i></div>
-                        <div class="w-6 h-6 bg-slate-900 rounded-md flex items-center justify-center"><i data-lucide="compass" class="w-3 h-3 text-blue-400"></i></div>
-                        <div class="w-6 h-6 bg-gradient-to-b from-amber-400 to-orange-500 rounded-md flex items-center justify-center"><i data-lucide="music" class="w-3 h-3 text-white"></i></div>
+                    <div class="absolute bottom-2 left-2 right-2 h-8 ios-dock rounded-[14px] flex items-center justify-around px-2 shadow-lg">
+                        <div class="w-5 h-5 bg-white/20 rounded-md flex items-center justify-center"><i data-lucide="message-circle" class="w-2.5 h-2.5 text-white"></i></div>
+                        <div class="w-5 h-5 bg-white/20 rounded-md flex items-center justify-center"><i data-lucide="compass" class="w-2.5 h-2.5 text-white"></i></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="tab-community" class="hidden space-y-3">
-            <div class="flex justify-between items-center bg-slate-900/60 p-2 border border-white/5 rounded-lg">
-                <div>
-                    <h2 class="text-[10px] font-bold text-white uppercase tracking-wider">Queue Pack Registry</h2>
-                </div>
-                <button onclick="clearRegistryFully()" class="bg-rose-950/40 hover:bg-rose-900/40 border border-rose-500/20 text-rose-400 py-0.5 px-1.5 rounded text-[8px] transition-all cursor-pointer">
-                    Purge All
-                </button>
+        <div id="tab-community" class="hidden space-y-2">
+            <div class="flex justify-between items-center bg-slate-900/80 p-2 border border-white/5 rounded-lg">
+                <h2 class="text-[8px] font-bold text-white uppercase tracking-wider">Uložené ikony v paměti vašeho prohlížeče</h2>
+                <button onclick="clearRegistryFully()" class="bg-rose-950/40 hover:bg-rose-900/60 border border-rose-500/30 text-rose-400 py-0.5 px-1.5 rounded text-[7px] cursor-pointer transition-all">Vymazat paměť</button>
             </div>
-
-            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2" id="community-grid"></div>
+            <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-1.5" id="community-grid"></div>
         </div>
-
-        <div id="hd-renderer" style="position: absolute; top: -9999px; left: -9999px; width: 2048px; height: 2048px; overflow: hidden; pointer-events: none;"></div>
-
     </main>
+
+    <canvas id="exportCanvas" style="display:none;"></canvas>
 
     <script>
         let currentAssetType = 'icon';
-        const presetLabels = { 'heart': 'Health', 'music': 'Music', 'cloud-sun': 'Weather', 'message-square': 'Messages', 'camera': 'Camera', 'compass': 'Safari', 'terminal': 'Terminal', 'cpu': 'Processor', 'wallet': 'Wallet' };
-        const presetTexts = { 'cloud-sun': '19°C', 'heart': '72 BPM', 'cpu': 'Core On' };
+        
+        // Rozsáhlá App Store databáze aplikací
+        const appStoreDatabase = {
+            'spotify': { label: 'Spotify', bg: '#1db954', iconColor: '#ffffff', icon: 'music' },
+            'instagram': { label: 'Instagram', bg: '#e1306c', iconColor: '#ffffff', icon: 'camera' },
+            'netflix': { label: 'Netflix', bg: '#e50914', iconColor: '#ffffff', icon: 'terminal' },
+            'youtube': { label: 'YouTube', bg: '#ff0000', iconColor: '#ffffff', icon: 'music' },
+            'pinterest': { label: 'Pinterest', bg: '#bd081c', iconColor: '#ffffff', icon: 'layers' },
+            'tiktok': { label: 'TikTok', bg: '#000000', iconColor: '#00f2fe', icon: 'music' },
+            'safari': { label: 'Safari', bg: '#1077e5', iconColor: '#ffffff', icon: 'compass' },
+            'wallet': { label: 'Wallet', bg: '#1e1e1e', iconColor: '#ff9500', icon: 'wallet' },
+            'health': { label: 'Zdraví', bg: '#ff2d55', iconColor: '#ffffff', icon: 'heart' },
+            'messages': { label: 'Zprávy', bg: '#34c759', iconColor: '#ffffff', icon: 'message-square' },
+            'messenger': { label: 'Messenger', bg: '#006aff', iconColor: '#ffffff', icon: 'message-square' }
+        };
 
-        if (!localStorage.getItem('ios_studio_db')) {
-            localStorage.setItem('ios_studio_db', JSON.stringify([]));
-        }
+        // Lucide ikony mapované na SVG cesty pro čistý Canvas export bez externích knihoven
+        const canvasPathMap = {
+            'heart': 'M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z',
+            'music': 'M9 18V5l12-2v13M9 10l12-2M7 22a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm12-2a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z',
+            'camera': 'M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z M12 17a4 4 0 1 1 0-8 4 4 0 0 1 0 8Z',
+            'message-square': 'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z',
+            'compass': 'M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm0-13l1.5 4.5L18 12l-4.5 1.5L12 18l-1.5-4.5L6 12l4.5-1.5L12 9z',
+            'wallet': 'M21 12V7H5a2 2 0 0 1 0-4h14v4M3 5v14a2 2 0 0 0 2 2h16v-5M16 12h4v4h-4z',
+            'cloud-sun': 'M12 2v2M4.22 4.22l1.42 1.42M1 12h2M21 12h2M18.36 5.64l1.42-1.42M22 17a3 3 0 0 1-3 3H7a5 5 0 0 1-1-9.9M12 14a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z',
+            'terminal': 'm4 17 6-6-6-6M12 19h8',
+            'bell': 'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9ZM10.3 21a1.94 1.94 0 0 0 3.4 0',
+            'layers': 'm12 3-10 5 10 5 10-5-10-5ZM2 17l10 5 10-5M2 12l10 5 10-5'
+        };
 
         document.addEventListener("DOMContentLoaded", function() {
-            lucide.createIcons();
-            updatePresetConfig();
+            if (!localStorage.getItem('ios_studio_db')) {
+                localStorage.setItem('ios_studio_db', JSON.stringify([]));
+            }
             updatePreview();
             evalSmartButtonState();
         });
 
-        function updatePresetConfig() {
-            const currentGlyph = document.getElementById('iconSelect').value;
-            document.getElementById('assetLabel').value = presetLabels[currentGlyph] || 'App';
-            document.getElementById('elementText').value = (currentAssetType !== 'icon') ? (presetTexts[currentGlyph] || "Active") : "";
+        function searchAppStore() {
+            const query = document.getElementById('appSearchInput').value.toLowerCase().trim();
+            if (!query) return;
+
+            if (appStoreDatabase[query]) {
+                const app = appStoreDatabase[query];
+                document.getElementById('assetLabel').value = app.label;
+                document.getElementById('bgColor').value = app.bg;
+                document.getElementById('iconColor').value = app.iconColor;
+                document.getElementById('iconSelect').value = app.icon;
+                updatePreview();
+            } else {
+                // Inteligentní fallback generátor barvy
+                document.getElementById('assetLabel').value = query.charAt(0).toUpperCase() + query.slice(1);
+                document.getElementById('bgColor').value = '#0284c7';
+                document.getElementById('iconColor').value = '#ffffff';
+                updatePreview();
+            }
         }
 
         function switchTab(target) {
-            const tabMaker = document.getElementById('tab-maker');
-            const tabCommunity = document.getElementById('tab-community');
-            const btnMaker = document.getElementById('btn-maker');
-            const btnCommunity = document.getElementById('btn-community');
+            document.getElementById('tab-maker').classList.toggle('hidden', target !== 'maker');
+            document.getElementById('tab-community').classList.toggle('hidden', target !== 'community');
+            
+            document.getElementById('btn-maker').className = target === 'maker' ? "px-2 py-0.5 rounded bg-blue-600 font-bold text-[8px] text-white cursor-pointer" : "px-2 py-0.5 rounded font-bold text-[8px] text-slate-400 hover:text-white cursor-pointer";
+            document.getElementById('btn-community').className = target === 'community' ? "px-2 py-0.5 rounded bg-blue-600 font-bold text-[8px] text-white cursor-pointer" : "px-2 py-0.5 rounded font-bold text-[8px] text-slate-400 hover:text-white cursor-pointer";
 
-            if (target === 'maker') {
-                tabMaker.classList.remove('hidden');
-                tabCommunity.classList.add('hidden');
-                btnMaker.className = "px-2.5 py-0.5 rounded bg-blue-600 font-bold text-[9px] text-white cursor-pointer";
-                btnCommunity.className = "px-2.5 py-0.5 rounded font-bold text-[9px] text-slate-400 hover:text-white cursor-pointer";
-                evalSmartButtonState();
-            } else {
-                tabMaker.classList.add('hidden');
-                tabCommunity.classList.remove('hidden');
-                btnMaker.className = "px-2.5 py-0.5 rounded font-bold text-[9px] text-slate-400 hover:text-white cursor-pointer";
-                btnCommunity.className = "px-2.5 py-0.5 rounded bg-blue-600 font-bold text-[9px] text-white cursor-pointer";
-                renderRegistryGrid();
-            }
+            if (target === 'community') renderRegistryGrid();
+            else evalSmartButtonState();
         }
 
         function setAssetType(type) {
             currentAssetType = type;
             ['icon', 'widget-s', 'widget-m'].forEach(t => {
-                document.getElementById(`type-${t}`).className = "py-1 rounded border border-white/10 bg-slate-950/40 text-[9px] font-bold flex items-center justify-center gap-1 text-slate-400 hover:text-white cursor-pointer";
+                document.getElementById(`type-${t}`).className = t === type ? "py-0.5 rounded border border-blue-500 bg-blue-500/10 text-[8px] font-bold text-white cursor-pointer" : "py-0.5 rounded border border-white/10 bg-slate-950/40 text-[8px] font-bold text-slate-400 hover:text-white cursor-pointer";
             });
-            document.getElementById(`type-${type}`).className = "py-1 rounded border border-blue-500 bg-blue-500/10 text-[9px] font-bold flex items-center justify-center gap-1 text-white cursor-pointer";
 
             const container = document.getElementById('preview-container');
             const element = document.getElementById('ios-element');
@@ -231,143 +232,130 @@
 
             if (type === 'icon') {
                 container.className = "col-span-1 row-span-1 flex flex-col items-center justify-start";
-                element.className = "w-8 h-8 rounded-md shadow-lg flex flex-col items-center justify-center relative overflow-hidden border border-white/10";
+                element.className = "w-8 h-8 rounded-lg shadow-lg flex flex-col items-center justify-center relative overflow-hidden";
                 label.classList.remove('hidden');
             } else if (type === 'widget-s') {
                 container.className = "col-span-2 row-span-2 flex flex-col items-center justify-start";
-                element.className = "w-[72px] h-[72px] rounded-[14px] shadow-lg flex flex-col items-center justify-center relative overflow-hidden border border-white/10";
+                element.className = "w-[72px] h-[72px] rounded-[14px] shadow-lg flex flex-col items-center justify-center relative overflow-hidden";
                 label.classList.add('hidden');
             } else if (type === 'widget-m') {
                 container.className = "col-span-4 row-span-2 flex flex-col items-center justify-start";
-                element.className = "w-[152px] h-[72px] rounded-[14px] shadow-lg flex flex-col items-center justify-center relative overflow-hidden border border-white/10";
+                element.className = "w-[152px] h-[72px] rounded-[14px] shadow-lg flex flex-col items-center justify-center relative overflow-hidden";
                 label.classList.add('hidden');
             }
-            updatePresetConfig();
             updatePreview();
         }
 
         function updatePreview() {
-            const bgColor = document.getElementById('bgColor').value;
-            const iconColor = document.getElementById('iconColor').value;
-            const iconSelect = document.getElementById('iconSelect').value;
-            const customText = document.getElementById('elementText').value;
+            const bg = document.getElementById('bgColor').value;
+            const fg = document.getElementById('iconColor').value;
+            const icon = document.getElementById('iconSelect').value;
+            const text = document.getElementById('elementText').value;
 
-            document.getElementById('bgColorText').value = bgColor;
             document.getElementById('element-label').innerText = document.getElementById('assetLabel').value || "App";
-
-            const previewIcon = document.getElementById('preview-icon');
-            const previewText = document.getElementById('preview-text');
-
-            document.getElementById('ios-element').style.backgroundColor = bgColor;
-            previewIcon.style.color = iconColor;
-            previewIcon.setAttribute('data-lucide', iconSelect);
             
+            const element = document.getElementById('ios-element');
+            const pIcon = document.getElementById('preview-icon');
+            const pText = document.getElementById('preview-text');
+
+            element.style.backgroundColor = bg;
+            pIcon.style.color = fg;
+            pIcon.setAttribute('data-lucide', icon);
+
             if (currentAssetType === 'icon') {
-                previewIcon.className = "w-3.5 h-3.5";
-                previewText.classList.add('hidden');
+                pIcon.className = "w-4 h-4";
+                pText.classList.add('hidden');
             } else {
-                previewIcon.className = "w-5 h-5 text-center";
-                if (customText.trim() !== "") {
-                    previewText.innerText = customText;
-                    previewText.style.color = `${iconColor}c0`;
-                    previewText.classList.remove('hidden');
+                pIcon.className = "w-4 h-4";
+                if(text.trim()) {
+                    pText.innerText = text;
+                    pText.style.color = fg;
+                    pText.classList.remove('hidden');
                 } else {
-                    previewText.classList.add('hidden');
+                    pText.classList.add('hidden');
                 }
             }
             lucide.createIcons();
         }
 
-        // EVALUACE AUTOMATICKÉHO PŘEPÍNÁNÍ (.PNG vs .ZIP)
         function evalSmartButtonState() {
             const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
-            const count = db.length;
-            
-            document.getElementById('global-counter').innerText = count;
+            document.getElementById('global-counter').innerText = db.length;
             
             const btn = document.getElementById('smart-action-btn');
-            const iconNode = document.getElementById('smart-btn-icon');
-            const textNode = document.getElementById('smart-btn-text');
+            const icon = document.getElementById('smart-btn-icon');
+            const text = document.getElementById('smart-btn-text');
 
-            if (count >= 2) {
-                btn.className = "w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-1.5 rounded text-[10px] transition-all flex items-center justify-center gap-1 shadow-md cursor-pointer";
-                iconNode.setAttribute('data-lucide', 'archive');
-                textNode.innerText = `Export Pack (${count} items) -> .ZIP`;
+            if (db.length >= 2) {
+                btn.className = "w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold py-1.5 rounded text-[9px] flex items-center justify-center gap-1 shadow-md cursor-pointer";
+                icon.setAttribute('data-lucide', 'archive');
+                text.innerText = `Stáhnout kompletní ZIP balíček (${db.length} ikon)`;
             } else {
-                btn.className = "w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-1.5 rounded text-[10px] transition-all flex items-center justify-center gap-1 shadow-md cursor-pointer";
-                iconNode.setAttribute('data-lucide', 'download');
-                textNode.innerText = "Download Editor View (.PNG)";
+                btn.className = "w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold py-1.5 rounded text-[9px] flex items-center justify-center gap-1 shadow-md cursor-pointer";
+                icon.setAttribute('data-lucide', 'download');
+                text.innerText = "Stáhnout aktuální ikonu (.PNG)";
             }
             lucide.createIcons();
         }
 
         function executeSmartAction() {
             const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
-            if (db.length >= 2) {
-                compileAndDownloadZip();
-            } else {
-                downloadAssetDirectly();
-            }
+            if (db.length >= 2) downloadZipArchive(db);
+            else downloadSingleAsset();
         }
 
-        // VNITŘNÍ GENERÁTOR PRO VYSOKÉ ROZLIŠENÍ (HD / SKUTEČNÁ VELIKOST V kB)
-        function generateHDDOMNode(item) {
-            const wrapper = document.createElement('div');
-            wrapper.style.display = 'flex';
-            wrapper.style.flexDirection = 'column';
-            wrapper.style.alignItems = 'center';
-            wrapper.style.justifyContent = 'center';
-            wrapper.style.backgroundColor = item.bgColor;
-            wrapper.style.position = 'relative';
-            wrapper.style.boxSizing = 'border-box';
-
-            // Skutečné hardwarové rozměry pro iOS (Vysoká hustota v kB)
-            if (item.type === 'icon') {
-                wrapper.style.width = '1024px';
-                wrapper.style.height = '1024px';
-                wrapper.style.borderRadius = '220px';
-            } else if (item.type === 'widget-s') {
-                wrapper.style.width = '1024px';
-                wrapper.style.height = '1024px';
-                wrapper.style.borderRadius = '190px';
-            } else if (item.type === 'widget-m') {
-                wrapper.style.width = '2112px';
-                wrapper.style.height = '1024px';
-                wrapper.style.borderRadius = '190px';
-            }
-
-            const icon = document.createElement('i');
-            icon.setAttribute('data-lucide', item.icon);
-            icon.style.color = item.iconColor;
+        // Nativní Canvas Generátor (1024px HD) - Nepotřebuje html2canvas, funguje 100% vždy
+        function drawAssetToCanvas(item, callback) {
+            const canvas = document.getElementById('exportCanvas');
+            const ctx = canvas.getContext('2d');
             
+            const w = item.type === 'widget-m' ? 2112 : 1024;
+            const h = 1024;
+            canvas.width = w;
+            canvas.height = h;
+
+            // Pozadí s iOS zaoblením rohů
+            ctx.fillStyle = item.bgColor;
+            const radius = 200;
+            ctx.beginPath();
+            ctx.roundRect(0, 0, w, h, radius);
+            ctx.fill();
+
+            // Vykreslení ikony z vektorové mapy
+            ctx.strokeStyle = item.iconColor;
+            ctx.lineWidth = 32;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            
+            ctx.save();
+            // Centrovaná škála
             if (item.type === 'icon') {
-                icon.style.width = '512px';
-                icon.style.height = '512px';
+                ctx.translate(w/2 - 256, h/2 - 256);
+                ctx.scale(21.33, 21.33); // 24px vektor -> 512px ikona
             } else {
-                icon.style.width = '380px';
-                icon.style.height = '380px';
+                ctx.translate(w/2 - 180, h/2 - 240);
+                ctx.scale(15, 15);
             }
 
-            wrapper.appendChild(icon);
+            const pathStr = canvasPathMap[item.icon] || canvasPathMap['heart'];
+            const p = new Path2D(pathStr);
+            ctx.stroke(p);
+            ctx.restore();
 
+            // Pokud jde o widget s doprovodným textem
             if (item.type !== 'icon' && item.txt) {
-                const text = document.createElement('span');
-                text.style.fontFamily = 'sans-serif';
-                text.style.fontWeight = 'bold';
-                text.style.marginTop = '40px';
-                text.style.fontSize = '90px';
-                text.style.color = `${item.iconColor}d0`;
-                text.style.textTransform = 'uppercase';
-                wrapper.appendChild(text);
-                text.innerText = item.txt;
+                ctx.fillStyle = item.iconColor;
+                ctx.font = "bold 75px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText(item.txt.toUpperCase(), w / 2, h / 2 + 260);
             }
 
-            return wrapper;
+            callback(canvas.toDataURL('image/png'));
         }
 
-        function downloadAssetDirectly() {
+        function downloadSingleAsset() {
             const currentItem = {
-                name: document.getElementById('assetLabel').value || 'ios-asset',
+                name: document.getElementById('assetLabel').value || 'app_icon',
                 type: currentAssetType,
                 bgColor: document.getElementById('bgColor').value,
                 iconColor: document.getElementById('iconColor').value,
@@ -375,148 +363,116 @@
                 txt: document.getElementById('elementText').value
             };
 
-            const hdNode = generateHDDOMNode(currentItem);
-            const renderer = document.getElementById('hd-renderer');
-            renderer.innerHTML = "";
-            renderer.appendChild(hdNode);
-            lucide.createIcons({attrs: {"stroke-width": 1.5}});
-
-            setTimeout(() => {
-                html2canvas(hdNode, { backgroundColor: null, scale: 1, logging: false }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = `${currentItem.name.toLowerCase().replace(/\s+/g, '_')}.png`;
-                    link.href = canvas.toDataURL('image/png', 1.0);
-                    link.click();
-                    renderer.innerHTML = "";
-                });
-            }, 50);
+            drawAssetToCanvas(currentItem, function(dataUrl) {
+                const link = document.createElement('a');
+                link.download = `${currentItem.name.toLowerCase().replace(/\s+/g, '_')}.png`;
+                link.href = dataUrl;
+                link.click();
+            });
         }
 
         function saveToRegistry() {
             const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
             const record = {
                 id: Date.now(),
-                name: document.getElementById('assetLabel').value || 'Asset Spec',
+                name: document.getElementById('assetLabel').value || 'Nepojmenovaná ikona',
                 type: currentAssetType,
                 bgColor: document.getElementById('bgColor').value,
                 iconColor: document.getElementById('iconColor').value,
                 icon: document.getElementById('iconSelect').value,
-                txt: (currentAssetType !== 'icon') ? document.getElementById('elementText').value : ""
+                txt: currentAssetType !== 'icon' ? document.getElementById('elementText').value : ""
             };
 
             db.unshift(record);
             localStorage.setItem('ios_studio_db', JSON.stringify(db));
+            
+            // Vizuální odezva tlačítka
+            const btn = document.getElementById('btn-save');
+            const origText = btn.innerHTML;
+            btn.innerHTML = `<i data-lucide="check-circle" class="w-2.5 h-2.5 text-emerald-400"></i> Uloženo!`;
+            lucide.createIcons();
+            setTimeout(() => { btn.innerHTML = origText; lucide.createIcons(); }, 1000);
+
             evalSmartButtonState();
-            switchTab('community');
         }
 
         function renderRegistryGrid() {
             const grid = document.getElementById('community-grid');
             const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
-            grid.innerHTML = ""; 
+            grid.innerHTML = "";
 
             if (db.length === 0) {
-                grid.innerHTML = `<div class="col-span-full py-4 text-center text-slate-600 text-[9px] font-mono uppercase tracking-wider">Registry empty.</div>`;
+                grid.innerHTML = `<div class="col-span-full py-6 text-center text-slate-600 font-mono text-[8px]">ŽÁDNÉ ULOŽENÉ IKONY V PROHLÍŽEČI</div>`;
                 return;
             }
 
             db.forEach(item => {
                 const card = document.createElement('div');
-                card.className = "bg-slate-900/40 border border-white/5 rounded-md p-1.5 flex flex-col items-center justify-between text-center shadow-sm";
-                
-                let previewBox = "";
-                if (item.type === 'widget-m') {
-                    previewBox = `<div class="w-10 h-5 rounded flex flex-col items-center justify-center p-0.5" style="background-color: ${item.bgColor}"><i data-lucide="${item.icon}" class="w-2 h-2" style="color: ${item.iconColor}"></i></div>`;
-                } else {
-                    previewBox = `<div class="w-5 h-5 rounded flex flex-col items-center justify-center p-0.5" style="background-color: ${item.bgColor}"><i data-lucide="${item.icon}" class="w-2.5 h-2.5" style="color: ${item.iconColor}"></i></div>`;
-                }
-
+                card.className = "bg-slate-900/60 border border-white/5 rounded-lg p-2 flex flex-col items-center justify-between text-center shadow-md";
                 card.innerHTML = `
-                    <div class="h-6 flex items-center justify-center">${previewBox}</div>
-                    <div class="w-full mt-1">
-                        <p class="font-bold text-[8px] text-slate-400 truncate tracking-tight">${item.name}</p>
-                        <div class="grid grid-cols-2 gap-0.5 mt-1">
-                            <button onclick="mountAsset(${item.id})" class="py-0.5 bg-slate-950 hover:bg-blue-600 rounded text-[7px] text-slate-300 transition-all cursor-pointer">Edit</button>
-                            <button onclick="purgeAsset(${item.id})" class="py-0.5 bg-slate-950 hover:bg-rose-950 text-rose-400 rounded text-[7px] transition-all cursor-pointer">Drop</button>
-                        </div>
+                    <div class="w-6 h-6 rounded flex items-center justify-center shadow" style="background-color: ${item.bgColor}">
+                        <i data-lucide="${item.icon}" class="w-3.5 h-3.5" style="color: ${item.iconColor}"></i>
+                    </div>
+                    <p class="font-bold text-[8px] text-slate-300 truncate w-full mt-1.5">${item.name}</p>
+                    <div class="grid grid-cols-2 gap-1 w-full mt-2">
+                        <button onclick="loadAssetToEditor(${item.id})" class="py-0.5 bg-blue-600/20 hover:bg-blue-600 text-blue-300 hover:text-white rounded text-[7px] font-bold cursor-pointer transition-all">Načíst</button>
+                        <button onclick="deleteAsset(${item.id})" class="py-0.5 bg-rose-950/40 hover:bg-rose-600 text-rose-400 hover:text-white rounded text-[7px] cursor-pointer transition-all">Smazat</button>
                     </div>
                 `;
                 grid.appendChild(card);
             });
             lucide.createIcons();
-            evalSmartButtonState();
+            document.getElementById('global-counter').innerText = db.length;
         }
 
-        function mountAsset(id) {
+        function loadAssetToEditor(id) {
             const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
-            const element = db.find(item => item.id === id);
-            if (!element) return;
+            const item = db.find(x => x.id === id);
+            if(!item) return;
 
-            document.getElementById('assetLabel').value = element.name;
-            setAssetType(element.type);
-            document.getElementById('bgColor').value = element.bgColor;
-            document.getElementById('iconColor').value = element.iconColor;
-            document.getElementById('iconSelect').value = element.icon;
-            document.getElementById('elementText').value = element.txt;
+            document.getElementById('assetLabel').value = item.name;
+            document.getElementById('bgColor').value = item.bgColor;
+            document.getElementById('iconColor').value = item.iconColor;
+            document.getElementById('iconSelect').value = item.icon;
+            document.getElementById('elementText').value = item.txt || "";
 
-            updatePreview();
+            setAssetType(item.type);
             switchTab('maker');
         }
 
-        function purgeAsset(id) {
+        function deleteAsset(id) {
             let db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
-            db = db.filter(item => item.id !== id);
+            db = db.filter(x => x.id !== id);
             localStorage.setItem('ios_studio_db', JSON.stringify(db));
             renderRegistryGrid();
         }
 
         function clearRegistryFully() {
-            localStorage.setItem('ios_studio_db', JSON.stringify([]));
-            renderRegistryGrid();
+            if(confirm("Opravdu smazat celou lokální databázi ikon?")) {
+                localStorage.setItem('ios_studio_db', JSON.stringify([]));
+                renderRegistryGrid();
+            }
         }
 
-        // BATCH HD ZIP ASYNC COMPILER (Zaručuje velkou velikost kB a ostrý tisk)
-        function compileAndDownloadZip() {
-            const db = JSON.parse(localStorage.getItem('ios_studio_db')) || [];
-            if (db.length === 0) return;
-
+        function downloadZipArchive(db) {
             const zip = new JSZip();
-            const renderer = document.getElementById('hd-renderer');
-            renderer.innerHTML = ""; 
-
-            let renderingQueue = Promise.resolve();
+            let loadedCount = 0;
 
             db.forEach((item, index) => {
-                renderingQueue = renderingQueue.then(() => {
-                    return new Promise((resolve) => {
-                        const hdNode = generateHDDOMNode(item);
-                        renderer.appendChild(hdNode);
-                        
-                        // Inicializace velkých SVG ikon s tlustší čárou pro HD
-                        lucide.createIcons({attrs: {"stroke-width": 1.5}});
-
-                        setTimeout(() => {
-                            html2canvas(hdNode, { backgroundColor: null, scale: 1, logging: false }).then(canvas => {
-                                const base64Data = canvas.toDataURL('image/png', 1.0).split(',')[1];
-                                const safeName = item.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-                                const fileName = `${safeName}_hd_${index + 1}.png`;
-                                
-                                zip.file(fileName, base64Data, { base64: true });
-                                hdNode.remove(); 
-                                resolve();
-                            });
-                        }, 60); 
-                    });
-                });
-            });
-
-            renderingQueue.then(() => {
-                zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: { level: 9 } }).then(function(content) {
-                    const link = document.createElement('a');
-                    link.download = `ios_hd_pack_${Date.now()}.zip`;
-                    link.href = URL.createObjectURL(content);
-                    link.click();
-                    renderer.innerHTML = ""; 
+                drawAssetToCanvas(item, function(dataUrl) {
+                    const base64Data = dataUrl.split(',')[1];
+                    const filename = `${item.name.toLowerCase().replace(/[^a-z0-9]/gi, '_')}_${index + 1}.png`;
+                    zip.file(filename, base64Data, { base64: true });
+                    
+                    loadedCount++;
+                    if(loadedCount === db.length) {
+                        zip.generateAsync({ type: "blob" }).then(function(content) {
+                            const link = document.createElement('a');
+                            link.download = `ios_pack_${Date.now()}.zip`;
+                            link.href = URL.createObjectURL(content);
+                            link.click();
+                        });
+                    }
                 });
             });
         }
